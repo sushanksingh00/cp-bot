@@ -1,4 +1,4 @@
-from models import Users, ContestPerformance, ProblemAttempt, DailyActivity, TagPerformance, RecommendationQueue
+from models import *
 from database import Base, engine, sessionLocal
 from sqlalchemy import select
 from schema import UserBase
