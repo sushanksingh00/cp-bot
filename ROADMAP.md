@@ -62,9 +62,9 @@ Learn how real backend projects are structured.
 
 #### Configuration
 
-* [ ] Environment variables
-* [ ] config.py
-* [ ] Remove hardcoded DB credentials
+* [x] Environment variables
+* [x] config.py
+* [x] Remove hardcoded DB credentials
 
 ### Learn
 
