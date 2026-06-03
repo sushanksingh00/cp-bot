@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from database import engine
 from models import Base
 
-Base.metadata.create_all(bind=engine)
+#once alembic is doing we remove this
+#Base.metadata.create_all(bind=engine) # this is create table if not exist
 
 app = FastAPI(
     title= "AI Analytics for CP"

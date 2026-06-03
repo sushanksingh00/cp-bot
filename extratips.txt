@@ -1,0 +1,9 @@
+ModuleNotFoundError: No module named 'psycopg'
+
+
+
+
+
+
+solution - use python -m then command
+this forces the venv python to run

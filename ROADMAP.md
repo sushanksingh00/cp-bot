@@ -89,11 +89,11 @@ Learn how production databases evolve.
 
 #### Alembic
 
-* [ ] Install Alembic
-* [ ] Initialize migrations
-* [ ] Create first migration
-* [ ] Upgrade database
-* [ ] Downgrade database
+* [x] Install Alembic
+* [x] Initialize migrations
+* [x] Create first migration
+* [x] Upgrade database
+* [x] Downgrade database
 
 #### Database Improvements
 
