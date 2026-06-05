@@ -3,6 +3,7 @@ from crud import *
 from externalapi import *
 from fastapi import HTTPException
 from services.auth_services import get_current_user
+from helpers import get_linked_cf_user
 
 router = APIRouter(
     prefix="/users",
@@ -14,9 +15,7 @@ router = APIRouter(
 
 def contest_info(current_user : AppUsers = Depends(get_current_user)):
 
-    user = sessionLocal().scalar(select(Users).where(
-        Users.app_user_id == current_user.id
-    ))
+    user = get_linked_cf_user(current_user.id)
 
 
     with sessionLocal() as session:
@@ -36,9 +35,7 @@ def contest_info(current_user : AppUsers = Depends(get_current_user)):
 @router.get("/daily-activity")
 def daily_activity_info(current_user : AppUsers = Depends(get_current_user)):
 
-    user = sessionLocal().scalar(select(Users).where(
-        Users.app_user_id == current_user.id
-    ))
+    user = get_linked_cf_user(current_user.id)
 
     with sessionLocal() as session:
         daily_activity = session.scalars(select(DailyActivity).where(
@@ -60,9 +57,7 @@ def daily_activity_info(current_user : AppUsers = Depends(get_current_user)):
 @router.get("/tags")
 def tag_info(current_user : AppUsers = Depends(get_current_user)):
 
-    user = sessionLocal().scalar(select(Users).where(
-        Users.app_user_id == current_user.id
-    ))
+    user = get_linked_cf_user(current_user.id)
 
     with sessionLocal() as session:
         tags = session.scalars(select(TagPerformance).where(
@@ -81,9 +76,7 @@ def tag_info(current_user : AppUsers = Depends(get_current_user)):
 
 def weak_tag_info(current_user : AppUsers = Depends(get_current_user)):
 
-    user = sessionLocal().scalar(select(Users).where(
-        Users.app_user_id == current_user.id
-    ))
+    user = get_linked_cf_user(current_user.id)
 
     with sessionLocal() as session:
         weakest_tag = session.scalars(select(TagPerformance).where(

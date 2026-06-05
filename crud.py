@@ -89,6 +89,28 @@ def delete_user(platform:str, handle:str):
             ProblemAttempt.user_id == user_id
         )
 
+        daily_activity_entries = session.scalars(select(DailyActivity).where(
+            DailyActivity.user_id == user_id
+        ))
+
+        tag_performance_entries = session.scalars(select(TagPerformance).where(
+            TagPerformance.user_id == user_id
+        ))
+
+        recommendation_queue_entries = session.scalars(select(RecommendationQueue).where(
+            RecommendationQueue.user_id == user_id
+        ))
+
+        for recommendation in recommendation_queue_entries:
+            session.delete(recommendation)
+
+        for tag in tag_performance_entries:
+            session.delete(tag)
+
+        for daily in daily_activity_entries:
+            session.delete(daily)
+
+
         for problem in problem_entries:
             session.delete(problem)
         

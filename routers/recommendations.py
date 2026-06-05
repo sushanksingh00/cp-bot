@@ -4,6 +4,7 @@ from crud import *
 from externalapi import *
 from fastapi import HTTPException
 from services.auth_services import get_current_user
+from helpers import get_linked_cf_user
 
 router = APIRouter(
     prefix="/users",
@@ -15,9 +16,7 @@ router = APIRouter(
 
 def recommendations_info(current_user : AppUsers = Depends(get_current_user)):
 
-    user = sessionLocal().scalar(select(Users).where(
-        Users.app_user_id == current_user.id
-    ))
+    user = get_linked_cf_user(current_user.id)
 
     with sessionLocal() as session:
         rec_rows = session.scalars(select(RecommendationQueue).where(
@@ -37,9 +36,7 @@ def recommendations_info(current_user : AppUsers = Depends(get_current_user)):
 
 def upsolve(current_user : AppUsers = Depends(get_current_user)):
 
-    user = sessionLocal().scalar(select(Users).where(
-        Users.app_user_id == current_user.id
-    ))
+    user = get_linked_cf_user(current_user.id)
 
     with sessionLocal() as session:
         upsolve_rows = session.scalars(select(RecommendationQueue).where(
