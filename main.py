@@ -13,12 +13,14 @@ from routers.sync import router as sync_router
 from routers.users import router as user_router
 from routers.recommendations import router as recommendation_router
 from routers.analytics import router as analytics_router
+from routers.auth import router as auth_router
 
 
 app.include_router(sync_router)
 app.include_router(user_router)
 app.include_router(recommendation_router)
 app.include_router(analytics_router)
+app.include_router(auth_router)
 
 @app.get("/")
 def health_check():

@@ -1,8 +1,9 @@
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from crud import * 
 from externalapi import *
 from fastapi import HTTPException
+from services.auth_services import get_current_user
 
 router = APIRouter(
     prefix="/users",
@@ -10,15 +11,13 @@ router = APIRouter(
 )
 
 
-@router.get("/{handle}/recommendations")
-def recommendations_info(handle:str):
-    try:
-        cf_data = fetch_cf_userdata(handle)[0]
-    except Exception:
-        raise HTTPException(status_code=404, detail="User not found or Codeforces API failed")
-    
-    handle = cf_data["handle"]
-    user = fetch_user_by_handle("codeforces", handle)
+@router.get("/recommendations")
+
+def recommendations_info(current_user : AppUsers = Depends(get_current_user)):
+
+    user = sessionLocal().scalar(select(Users).where(
+        Users.app_user_id == current_user.id
+    ))
 
     with sessionLocal() as session:
         rec_rows = session.scalars(select(RecommendationQueue).where(
@@ -34,15 +33,13 @@ def recommendations_info(handle:str):
             })
     return recommnedation_data
 
-@router.get("/{handle}/upsolve")
-def upsolve(handle:str):
-    try:
-        cf_data = fetch_cf_userdata(handle)[0]
-    except Exception:
-        raise HTTPException(status_code=404, detail="User not found or Codeforces API failed")
-    
-    handle = cf_data["handle"]
-    user = fetch_user_by_handle("codeforces", handle)
+@router.get("/upsolve")
+
+def upsolve(current_user : AppUsers = Depends(get_current_user)):
+
+    user = sessionLocal().scalar(select(Users).where(
+        Users.app_user_id == current_user.id
+    ))
 
     with sessionLocal() as session:
         upsolve_rows = session.scalars(select(RecommendationQueue).where(

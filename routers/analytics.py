@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from crud import * 
 from externalapi import *
 from fastapi import HTTPException
+from services.auth_services import get_current_user
 
 router = APIRouter(
     prefix="/users",
@@ -9,15 +10,14 @@ router = APIRouter(
 )
 
 
-@router.get("/{handle}/contests")
-def contest_info(handle:str):
-    try:
-        cf_data = fetch_cf_userdata(handle)[0]
-    except Exception:
-        raise HTTPException(status_code=404, detail="User not found or Codeforces API failed")
-    
-    handle = cf_data["handle"]
-    user = fetch_user_by_handle("codeforces", handle)
+@router.get("/contests")
+
+def contest_info(current_user : AppUsers = Depends(get_current_user)):
+
+    user = sessionLocal().scalar(select(Users).where(
+        Users.app_user_id == current_user.id
+    ))
+
 
     with sessionLocal() as session:
         contest_history = session.scalars(select(ContestPerformance)
@@ -33,15 +33,12 @@ def contest_info(handle:str):
     return contest_data
 
 
-@router.get("/{handle}/daily-activity")
-def daily_activity_info(handle: str):
-    try:
-        cf_data = fetch_cf_userdata(handle)[0]
-    except Exception:
-        raise HTTPException(status_code=404, detail="User not found or Codeforces API failed")
-    
-    handle = cf_data["handle"]
-    user = fetch_user_by_handle("codeforces", handle)
+@router.get("/daily-activity")
+def daily_activity_info(current_user : AppUsers = Depends(get_current_user)):
+
+    user = sessionLocal().scalar(select(Users).where(
+        Users.app_user_id == current_user.id
+    ))
 
     with sessionLocal() as session:
         daily_activity = session.scalars(select(DailyActivity).where(
@@ -60,15 +57,12 @@ def daily_activity_info(handle: str):
 
 
 
-@router.get("/{handle}/tags")
-def tags_info(handle: str):
-    try:
-        cf_data = fetch_cf_userdata(handle)[0]
-    except Exception:
-        raise HTTPException(status_code=404, detail="User not found or Codeforces API failed")
-    
-    handle = cf_data["handle"]
-    user = fetch_user_by_handle("codeforces", handle)
+@router.get("/tags")
+def tag_info(current_user : AppUsers = Depends(get_current_user)):
+
+    user = sessionLocal().scalar(select(Users).where(
+        Users.app_user_id == current_user.id
+    ))
 
     with sessionLocal() as session:
         tags = session.scalars(select(TagPerformance).where(
@@ -83,15 +77,13 @@ def tags_info(handle: str):
             })
     return tag_data
 
-@router.get("/{handle}/tags/weakest")
-def weak_tag_info(handle: str):
-    try:
-        cf_data = fetch_cf_userdata(handle)[0]
-    except Exception:
-        raise HTTPException(status_code=404, detail="User not found or Codeforces API failed")
-    
-    handle = cf_data["handle"]
-    user = fetch_user_by_handle("codeforces", handle)
+@router.get("/tags/weakest")
+
+def weak_tag_info(current_user : AppUsers = Depends(get_current_user)):
+
+    user = sessionLocal().scalar(select(Users).where(
+        Users.app_user_id == current_user.id
+    ))
 
     with sessionLocal() as session:
         weakest_tag = session.scalars(select(TagPerformance).where(

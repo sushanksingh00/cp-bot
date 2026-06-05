@@ -20,14 +20,16 @@ def insert_user(platform: str,
                 curr_rating: int,
                 max_rating:int,
                 rank : str,
-                max_rank :str):
+                max_rank :str,
+                current_user_id:int):
     with sessionLocal() as session:
         user = Users(platform=platform,
                      handle=handle,
                      curr_rating=curr_rating,
                      max_rating=max_rating,
                      rank=rank,
-                     max_rank=max_rank)
+                     max_rank=max_rank,
+                     app_user_id = current_user_id)
         session.add(user)
         session.commit()
         session.refresh(user)
@@ -39,7 +41,8 @@ def update_user(platform: str,
                 curr_rating: int,
                 max_rating:int,
                 rank : str,
-                max_rank :str):
+                max_rank :str,
+                app_user_id:int):
     with sessionLocal() as session:
         user = session.query(Users).filter(
             Users.handle==handle,

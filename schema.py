@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime, date
 
@@ -11,6 +11,16 @@ from datetime import datetime, date
 #sqlalchemy returns obj stored in attributes 
 #from attributes -> read from att too --> dict type
 
+#app_user
+
+class AppUserRegister(BaseModel):
+    username : str
+    email : EmailStr
+    password : str
+
+class AppUserLogin(BaseModel):
+    username : str
+    password : str
 #users
 
 class UserBase(BaseModel):

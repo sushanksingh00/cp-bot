@@ -113,29 +113,81 @@ You stop relying on create_all() and start working like backend teams do.
 
 ---
 
-# PHASE 3 — Advanced Analytics
+# PHASE 3 — Authentication & Security
+
+## Goal
+
+Learn how real applications manage users and access control.
+
+### Database
+
+* [x] Create AppUser model
+* [x] Add email field
+* [x] Add hashed_password field
+* [x] Alembic migration
+
+### Security
+
+* [x] Password hashing
+* [x] Password verification
+* [x] bcrypt/passlib
+
+### Authentication APIs
+
+* [x] Register endpoint
+* [x] Login endpoint
+
+### JWT
+
+* [x] Generate access token
+* [x] Verify token
+* [x] Decode token
+
+### Protected Routes
+
+* [x] Current user endpoint
+* [x] Protected dashboard endpoint
+* [x] Protected recommendation endpoint
+
+### Learn
+
+* Authentication
+* Authorization
+* JWT
+* Password Hashing
+* FastAPI Dependencies
+
+### Outcome
+
+Users can securely register, login, and access their own data.
+
+---
+
+# PHASE 4 — Advanced Analytics
+
+
+* [ ] DELETE USER KO SAHI KARDO
+
 
 ## Goal
 
 Turn data into intelligence.
 
-### Tasks
-
-#### SkillEstimate
+### SkillEstimate
 
 * [ ] Estimated rating per tag
 * [ ] Confidence score
 * [ ] Sample size
 * [ ] Trend calculation
 
-#### Progress Analytics
+### Progress Analytics
 
 * [ ] Rating progression
 * [ ] Tag progression
 * [ ] Activity streaks
 * [ ] Contest trend analysis
 
-#### New APIs
+### New APIs
 
 * [ ] /skills
 * [ ] /progress
@@ -153,130 +205,44 @@ Project becomes an analytics platform instead of a data storage app.
 
 ---
 
-# PHASE 4 — Frontend Foundations
+# PHASE 5 — Background Processing
 
 ## Goal
 
-Start becoming a Full Stack Developer.
+Learn scalable backend architecture.
 
-### Learn React
+### Redis
 
-#### Core React
+* [ ] Install Redis
+* [ ] Redis fundamentals
+* [ ] Cache dashboard responses
 
-* [ ] Components
-* [ ] Props
-* [ ] State
-* [ ] useEffect
-* [ ] useState
-* [ ] Routing
+### Celery
 
-#### Project Setup
+* [ ] Setup Celery
+* [ ] Setup workers
+* [ ] Setup task queue
 
-* [ ] Vite
-* [ ] React
-* [ ] TailwindCSS
+### Async Processing
 
-### Build
-
-#### Dashboard Page
-
-* [ ] User profile
-* [ ] Current rating
-* [ ] Max rating
-* [ ] Rank
-
-#### Analytics Page
-
-* [ ] Weak tags
-* [ ] Strong tags
-* [ ] Skill estimates
-
-#### Recommendation Page
-
-* [ ] Recommendation cards
-* [ ] Upsolve section
+* [ ] Background user sync
+* [ ] Background analytics generation
+* [ ] Job status tracking
 
 ### Learn
 
-* React
-* Component architecture
-* API consumption
-* State management
+* Queues
+* Workers
+* Distributed systems
+* Caching
 
 ### Outcome
 
-You become capable of building complete web applications.
+Long-running jobs no longer block requests.
 
 ---
 
-# PHASE 5 — Data Visualization
-
-## Goal
-
-Make analytics useful and visually appealing.
-
-### Tasks
-
-#### Charts
-
-* [ ] Rating graph
-* [ ] Tag performance chart
-* [ ] Activity graph
-* [ ] Contest performance graph
-
-#### Heatmaps
-
-* [ ] Daily activity heatmap
-
-### Libraries
-
-* [ ] Recharts
-
-### Learn
-
-* Data visualization
-* Frontend analytics dashboards
-
-### Outcome
-
-Project starts looking professional.
-
----
-
-# PHASE 6 — Authentication
-
-## Goal
-
-Learn user management.
-
-### Tasks
-
-#### Backend
-
-* [ ] Register
-* [ ] Login
-* [ ] JWT Authentication
-* [ ] Refresh Tokens
-
-#### Frontend
-
-* [ ] Login page
-* [ ] Register page
-* [ ] Protected routes
-
-### Learn
-
-* Authentication
-* Authorization
-* Security basics
-
-### Outcome
-
-Multi-user production-ready application.
-
----
-
-# PHASE 7 — DevOps Foundations
+# PHASE 6 — DevOps Foundations
 
 ## Goal
 
@@ -287,53 +253,30 @@ Learn deployment and infrastructure.
 * [ ] Dockerfile
 * [ ] Docker Compose
 
+### Services
+
+* [ ] FastAPI container
+* [ ] PostgreSQL container
+* [ ] Redis container
+
 ### Deployment
 
-* [ ] Deploy PostgreSQL
-* [ ] Deploy FastAPI
 * [ ] Environment configuration
+* [ ] Production deployment
 
 ### Learn
 
 * Containers
 * Linux basics
-* Deployment
+* Infrastructure
 
 ### Outcome
 
-You can deploy applications yourself.
+You can run the complete backend stack anywhere.
 
 ---
 
-# PHASE 8 — Background Processing
-
-## Goal
-
-Learn scalable backend architecture.
-
-### Redis
-
-* [ ] Install Redis
-* [ ] Cache dashboard responses
-
-### Celery
-
-* [ ] Background sync jobs
-* [ ] Async analytics generation
-
-### Learn
-
-* Queues
-* Distributed systems
-* Caching
-
-### Outcome
-
-Project begins resembling production architecture.
-
----
-
-# PHASE 9 — Testing
+# PHASE 7 — Testing
 
 ## Goal
 
@@ -343,111 +286,132 @@ Learn professional software development.
 
 * [ ] Analytics tests
 * [ ] Recommendation tests
+* [ ] SkillEstimate tests
 
 ### Integration Testing
 
 * [ ] API tests
 * [ ] Database tests
+* [ ] Auth tests
 
 ### Learn
 
 * Pytest
-* Test-driven thinking
-* Quality assurance
+* Mocking
+* Test design
 
 ### Outcome
 
-You can confidently modify code without breaking features.
+You can refactor safely and catch regressions.
 
 ---
 
-# PHASE 10 — AI Layer
+# PHASE 8 — Frontend Foundations
 
 ## Goal
 
-Use AI on top of a solid engineering foundation.
+Start becoming a Full Stack Developer.
 
-### Features
+### Learn React
+
+* [ ] Components
+* [ ] Props
+* [ ] State
+* [ ] useEffect
+* [ ] useState
+* [ ] Routing
+
+### Project Setup
+
+* [ ] Vite
+* [ ] React
+* [ ] TailwindCSS
+
+### API Integration
+
+* [ ] Auth integration
+* [ ] Dashboard integration
+* [ ] Analytics integration
+
+### Outcome
+
+Frontend can consume all backend APIs.
+
+---
+
+# PHASE 9 — Dashboard UI
+
+## Goal
+
+Build the complete user experience.
+
+### Pages
+
+* [ ] Login
+* [ ] Register
+* [ ] Dashboard
+* [ ] Recommendations
+
+### Dashboard
+
+* [ ] User profile
+* [ ] Current rating
+* [ ] Max rating
+* [ ] Weak tags
+* [ ] Strong tags
+* [ ] Skill estimates
+
+### Outcome
+
+Complete full-stack application.
+
+---
+
+# PHASE 10 — Data Visualization
+
+## Goal
+
+Present analytics professionally.
+
+### Charts
+
+* [ ] Rating graph
+* [ ] Tag performance graph
+* [ ] Activity graph
+* [ ] Contest performance graph
+
+### Heatmaps
+
+* [ ] Daily activity heatmap
+
+### Libraries
+
+* [ ] Recharts
+
+### Outcome
+
+Analytics become visually useful.
+
+---
+
+# PHASE 11 — AI Layer
 
 * [ ] AI Insights
 * [ ] Weekly Improvement Reports
 * [ ] Personalized Study Plans
 * [ ] Weakness Explanations
 
-### Learn
-
-* LLM integration
-* Prompt engineering
-* AI product design
-
-### Outcome
-
-AI becomes a value-add instead of a gimmick.
-
 ---
 
-# PHASE 11 — Resume-Level Engineering
-
-### CI/CD
+# PHASE 12 — Resume-Level Engineering
 
 * [ ] GitHub Actions
-
-### Monitoring
-
 * [ ] Logging
 * [ ] Health Checks
-
-### Documentation
-
 * [ ] API Docs
 * [ ] Architecture Docs
-
-### Multi Platform
-
-* [ ] LeetCode
-* [ ] CodeChef
-
-### Final Deployment
-
-* [ ] Public URL
+* [ ] LeetCode Integration
+* [ ] CodeChef Integration
+* [ ] Public Deployment
 * [ ] Demo Video
 * [ ] Portfolio Entry
-
----
-
-# End Goal
-
-## Backend
-
-* [x] FastAPI
-* [x] PostgreSQL
-* [x] SQLAlchemy
-* [ ] Redis
-* [ ] Celery
-* [ ] Testing
-* [ ] Docker
-
-## Frontend
-
-* [ ] React
-* [ ] Tailwind
-* [ ] Charts
-* [ ] Authentication
-
-## DevOps
-
-* [ ] Docker
-* [ ] CI/CD
-* [ ] Deployment
-
-## AI
-
-* [ ] Insights
-* [ ] Coaching
-* [ ] Recommendations
-
----
-
-Target Result:
-
-A complete full-stack analytics platform that demonstrates backend engineering, frontend development, databases, DevOps, system design, and AI integration in a single project.

@@ -3,6 +3,19 @@ from datetime import datetime
 from sqlalchemy.dialects.postgresql import JSONB
 from database import Base
 
+class AppUsers(Base):
+    __tablename__ = "app_users"
+    id = Column(Integer, primary_key=True, nullable=False)
+
+    username = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("username", "email"),
+    )
+
+
 class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, nullable=False)
@@ -15,6 +28,12 @@ class Users(Base):
 
     rank = Column(String)
     max_rank = Column(String)
+
+    app_user_id = Column(
+        Integer,
+        ForeignKey("app_users.id"),
+        nullable=False
+    )
 
     created_at = Column(DateTime, default=datetime.utcnow)
 
