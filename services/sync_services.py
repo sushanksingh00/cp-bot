@@ -3,7 +3,7 @@ from externalapi import *
 from fastapi import FastAPI, HTTPException
 from datetime import UTC
 
-def sync_user_contests(handle):
+def sync_user_contests(session, handle):
     try :
         cf_contest_data = fetch_cf_contest_history(handle) # a list of dict of contests
         cf_submission_data = fetch_cf_submission_history(handle) # a list of dict of submissions for each prob
@@ -30,7 +30,8 @@ def sync_user_contests(handle):
         problems_solved = len(solved)
         total_problems = len(attempted)
         
-        update_contest_performance(contest["contest_id"],
+        update_contest_performance(session,
+                                   contest["contest_id"],
                                    contest["contest_name"],
                                    contest["rank"],
                                    contest["old_rating"],
@@ -44,7 +45,7 @@ def sync_user_contests(handle):
         
 
 
-def compute_problem_attempt(handle):
+def compute_problem_attempt(session, handle):
     try:
         cf_submission_data = fetch_cf_submission_history(handle)
         problem_set = fetch_cf_problems()
@@ -75,7 +76,7 @@ def compute_problem_attempt(handle):
         if not problem:
             continue
 
-        update_problem_attempted(
+        update_problem_attempted(session,
             db_user.id,
             sub["submission_id"],
             sub["contest_id"],

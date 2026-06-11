@@ -166,7 +166,7 @@ Users can securely register, login, and access their own data.
 # PHASE 4 — Advanced Analytics
 
 
-* [ ] DELETE USER KO SAHI KARDO
+* [x] DELETE USER KO SAHI KARDO
 
 
 ## Goal
@@ -175,10 +175,10 @@ Turn data into intelligence.
 
 ### SkillEstimate
 
-* [ ] Estimated rating per tag
-* [ ] Confidence score
-* [ ] Sample size
-* [ ] Trend calculation
+* [x] Estimated rating per tag
+* [x] Confidence score
+* [x] Sample size
+* [x] Trend calculation
 
 ### Progress Analytics
 
@@ -213,21 +213,21 @@ Learn scalable backend architecture.
 
 ### Redis
 
-* [ ] Install Redis
-* [ ] Redis fundamentals
-* [ ] Cache dashboard responses
+* [x] Install Redis
+* [x] Redis fundamentals
+* [x] Cache dashboard responses
 
 ### Celery
 
-* [ ] Setup Celery
-* [ ] Setup workers
-* [ ] Setup task queue
+* [x] Setup Celery
+* [x] Setup workers
+* [x] Setup task queue
 
 ### Async Processing
 
-* [ ] Background user sync
-* [ ] Background analytics generation
-* [ ] Job status tracking
+* [x] Background user sync
+* [x] Background analytics generation
+* [x] Job status tracking
 
 ### Learn
 

@@ -3,7 +3,7 @@ from crud import *
 from externalapi import *
 from fastapi import HTTPException
 from services.auth_services import register_user, login_user
-from schema import AppUserLogin, AppUserRegister
+from schemas import AppUserLogin, AppUserRegister
 
 router = APIRouter(
     prefix="/auth",

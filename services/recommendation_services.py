@@ -13,7 +13,7 @@ def generate_weak_tag_recommendations(session, user_id):
         reason += (f"{tag.tag_name} "
             f"(success rate "
             f"{tag.success_rate:.1f}%)\n")
-    update_recommendation_queue(
+    update_recommendation_queue(session,
         user_id=user_id,
         problem_contest_id=None,
         problem_index=None,
@@ -37,7 +37,7 @@ def generate_consistency_recommendations(
 
     if inactive_days >= 7:
 
-        update_recommendation_queue(
+        update_recommendation_queue(session,
             user_id=user_id,
             problem_contest_id=None,
             problem_index=None,
@@ -62,7 +62,7 @@ def generate_rating_push_recommendations( session, user_id ):
 
     target = int(avg_rating + 100)
 
-    update_recommendation_queue(
+    update_recommendation_queue(session,
         user_id=user_id,
         problem_contest_id=None,
         problem_index=None,
@@ -117,7 +117,7 @@ def generate_upsolve_recommendations(session,user_id):
 
         contest_id, index = key
 
-        update_recommendation_queue(
+        update_recommendation_queue(session,
             user_id=user_id,
             problem_contest_id=contest_id,
             problem_index=index,

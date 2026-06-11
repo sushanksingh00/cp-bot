@@ -4,6 +4,8 @@ from externalapi import *
 from fastapi import HTTPException
 from services.auth_services import get_current_user
 from helpers import get_linked_cf_user
+from core.redis_client import redis_client
+import json
 
 router = APIRouter(
     prefix="/users",
@@ -29,6 +31,15 @@ def profile(current_user : AppUsers = Depends(get_current_user)):
 def dashboard(current_user : AppUsers = Depends(get_current_user)):
 
     user = get_linked_cf_user(current_user.id)
+
+    cache_key = f"dashboard:{user.id}"
+
+    cache_dashboard = redis_client.get(cache_key)
+
+    if cache_dashboard:
+        print("CACHE HIT")
+        print(cache_key)
+        return json.loads(cache_dashboard)
 
     # try:
     #     cf_data = fetch_cf_userdata(handle)[0]
@@ -129,12 +140,29 @@ def dashboard(current_user : AppUsers = Depends(get_current_user)):
                     day.average_rating
             })
 
-    return {
+    # return {
+    #     "user": user_data,
+    #     "weakest_tags": weak_tag_data,
+    #     "recommendations": recommendation_data,
+    #     "recent_activity": activity_data
+    # }
+
+    dashboard_data = {
         "user": user_data,
         "weakest_tags": weak_tag_data,
         "recommendations": recommendation_data,
         "recent_activity": activity_data
-    }
+    }   
+
+    redis_client.setex(
+        cache_key,
+        300,
+        json.dumps(
+            dashboard_data,
+            default=str
+        )
+    )
+    return dashboard_data
 
 
 

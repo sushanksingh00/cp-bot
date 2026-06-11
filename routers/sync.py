@@ -6,8 +6,12 @@ from services.analytics_serives import *
 from services.recommendation_services import *
 from services.sync_services import *
 from services.auth_services import get_current_user
-from schema import UserCreate, UserBase
+from schemas import UserCreate, UserBase
 from datetime import datetime, UTC
+from celery.result import AsyncResult
+
+from tasks.tasks import long_task, sync_user
+from core.celery_app import celery_app
 
 router = APIRouter(
     prefix="/sync",
@@ -16,31 +20,43 @@ router = APIRouter(
 
 @router.post("/codeforces")
 def sync(user: UserBase, current_user: AppUsers = Depends(get_current_user)):
-    try:
-        cf_data = fetch_cf_userdata(user.handle)[0]
-        print("ye thik h sync wala")
-        handle = cf_data["handle"]
 
-    except Exception:
-        raise HTTPException(status_code=404, detail="User not found or Codeforces API failed")
 
-    existing_user = fetch_user_by_handle(
-        "codeforces",
-        handle
+    task = sync_user.delay(
+        user.handle, #fake handle
+        current_user.id
     )
 
-    if existing_user:
-        update_user("codeforces", handle, cf_data["rating"],
-                    cf_data["maxRating"], cf_data["rank"], cf_data["maxRank"], current_user.id)
-    else:
-        insert_user("codeforces", handle, cf_data["rating"],
-                    cf_data["maxRating"], cf_data["rank"], cf_data["maxRank"], current_user.id)
-        
-    sync_user_contests(handle)
-    compute_problem_attempt(handle)
-    compute_daily_activity(handle)
-    compute_tag_performance(handle)
-    #skill estimate here
-    compute_recommendation_queue(handle)
+    return {
+        "task_id": task.id,
+        "status": "queued"
+    }
 
-    return {"message": "User Synced Succesfully"}
+    # if existing_user:
+    #     update_user("codeforces", handle, cf_data["rating"],
+    #                 cf_data["maxRating"], cf_data["rank"], cf_data["maxRank"], current_user.id)
+    # else:
+    #     insert_user("codeforces", handle, cf_data["rating"],
+    #                 cf_data["maxRating"], cf_data["rank"], cf_data["maxRank"], current_user.id)
+        
+    # with sessionLocal() as session:
+    #     sync_user_contests(session, handle)
+    #     compute_problem_attempt(session, handle)
+    #     compute_daily_activity(session,handle)
+    #     compute_tag_performance(session,handle)
+    #     compute_skill_estimate(session,handle)
+    #     compute_recommendation_queue(session,handle)
+
+    # return {"message": "User Synced Succesfully"}
+
+@router.get("/status/{task_id}")
+def get_status(task_id: str):
+
+    task = AsyncResult(task_id,
+                       app=celery_app)
+
+    return {
+        "task_id": task_id,
+        "state": task.state,
+        "result": task.result
+    }
