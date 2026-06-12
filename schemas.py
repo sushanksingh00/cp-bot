@@ -214,3 +214,31 @@ class SkillEstimateResponse(
 
     class Config:
         from_attributes = True
+
+
+class ProfileResponse(BaseModel):
+    handle: str
+    curr_rating: int | None
+    max_rating: int | None
+    rank: str | None
+
+class ContestResponse(BaseModel):
+        contest_name : str
+        rank : int | None
+        old_rating : int | None
+        new_rating: int | None
+class DailyActivityResponse(BaseModel):
+        date : date
+        problems_attempted : int | None
+        problems_solved : int | None
+
+class TagsResponse(BaseModel):
+        tag_name: str
+        success_rate : float | None
+        weakness_score : float | None
+class UpsolveResponse(BaseModel):
+    problem_contest_id: int
+    problem_index: str
+class RecommendationResponse(BaseModel):
+    recommendation_type: str
+    reason: str

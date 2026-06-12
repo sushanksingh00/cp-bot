@@ -4,6 +4,8 @@ from externalapi import *
 from fastapi import HTTPException
 from services.auth_services import get_current_user
 from helpers import get_linked_cf_user
+from schemas import ContestResponse, DailyActivityResponse, TagsResponse
+from typing import List
 
 router = APIRouter(
     prefix="/users",
@@ -11,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.get("/contests")
+@router.get("/contests", response_model=List[ContestResponse])
 
 def contest_info(current_user : AppUsers = Depends(get_current_user)):
 
@@ -32,7 +34,7 @@ def contest_info(current_user : AppUsers = Depends(get_current_user)):
     return contest_data
 
 
-@router.get("/daily-activity")
+@router.get("/daily-activity", response_model=List[DailyActivityResponse])
 def daily_activity_info(current_user : AppUsers = Depends(get_current_user)):
 
     user = get_linked_cf_user(current_user.id)
@@ -54,7 +56,7 @@ def daily_activity_info(current_user : AppUsers = Depends(get_current_user)):
 
 
 
-@router.get("/tags")
+@router.get("/tags", response_model=List[TagsResponse])
 def tag_info(current_user : AppUsers = Depends(get_current_user)):
 
     user = get_linked_cf_user(current_user.id)

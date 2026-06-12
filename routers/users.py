@@ -6,6 +6,7 @@ from services.auth_services import get_current_user
 from helpers import get_linked_cf_user
 from core.redis_client import redis_client
 import json
+from schemas import ProfileResponse
 
 router = APIRouter(
     prefix="/users",
@@ -13,18 +14,19 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("/", response_model=ProfileResponse)
 def profile(current_user : AppUsers = Depends(get_current_user)):
     
     user = get_linked_cf_user(current_user.id)
 
 
-    return {
-        "handle" : user.handle,
-        "curr_rating": user.curr_rating,
-        "max_rating": user.max_rating,
-        "rank": user.rank
-    }
+    # return {
+    #     "handle" : user.handle,
+    #     "curr_rating": user.curr_rating,
+    #     "max_rating": user.max_rating,
+    #     "rank": user.rank
+    # }
+    return user #user me se wo wo chiz nikal ke bhej dega simply
 
 
 @router.get("/dashboard")

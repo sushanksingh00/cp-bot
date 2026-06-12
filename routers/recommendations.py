@@ -5,6 +5,8 @@ from externalapi import *
 from fastapi import HTTPException
 from services.auth_services import get_current_user
 from helpers import get_linked_cf_user
+from typing import List
+from schemas import RecommendationResponse, UpsolveResponse
 
 router = APIRouter(
     prefix="/users",
@@ -12,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.get("/recommendations")
+@router.get("/recommendations", response_model=List[RecommendationResponse])
 
 def recommendations_info(current_user : AppUsers = Depends(get_current_user)):
 
@@ -32,7 +34,7 @@ def recommendations_info(current_user : AppUsers = Depends(get_current_user)):
             })
     return recommnedation_data
 
-@router.get("/upsolve")
+@router.get("/upsolve", response_model=List[UpsolveResponse])
 
 def upsolve(current_user : AppUsers = Depends(get_current_user)):
 
