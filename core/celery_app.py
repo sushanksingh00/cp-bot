@@ -1,4 +1,5 @@
 from celery import Celery
+import os
 
 # celery_app = Celery(
 #     "tasks",
@@ -8,6 +9,8 @@ from celery import Celery
 
 celery_app = Celery(
     "tasks",
-    broker="redis://localhost:6379/0",
-    backend="redis://localhost:6379/0"
+    broker=os.getenv("REDIS_URL"),
+    backend=os.getenv("REDIS_URL")
 )
+
+celery_app.conf.imports = ("tasks.task",)

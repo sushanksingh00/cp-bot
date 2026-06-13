@@ -28,6 +28,12 @@ def recommendations_info(current_user : AppUsers = Depends(get_current_user)):
 
         recommnedation_data =[]
         for row in rec_rows:
+            
+            if row.recommendation_type == "consistency_boost":
+                days_inactive  = row.reason.split(" ")[-2] # no activity for x days ....so -2
+                if( days_inactive < '7'):
+                    continue
+
             recommnedation_data.append({
                 "recommendation_type": row.recommendation_type,
                 "reason": row.reason

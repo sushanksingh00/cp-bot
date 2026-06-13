@@ -33,21 +33,21 @@ def generate_consistency_recommendations(
 
     if not latest_activity: return
 
+
     inactive_days = (date.today()- latest_activity.date).days
 
-    if inactive_days >= 7:
 
-        update_recommendation_queue(session,
-            user_id=user_id,
-            problem_contest_id=None,
-            problem_index=None,
-            recommendation_type="consistency_boost",
-            reason=(
-                f"No activity for "
-                f"{inactive_days} days"
-            ),
-            priority_score=95
-        )
+    update_recommendation_queue(session,
+        user_id=user_id,
+        problem_contest_id=None,
+        problem_index=None,
+        recommendation_type="consistency_boost",
+        reason=(
+            f"No activity for "
+            f"{inactive_days} days"
+        ),
+        priority_score=95
+    )
 
 def generate_rating_push_recommendations( session, user_id ):
 

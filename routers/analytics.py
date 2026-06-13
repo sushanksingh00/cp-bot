@@ -42,7 +42,7 @@ def daily_activity_info(current_user : AppUsers = Depends(get_current_user)):
     with sessionLocal() as session:
         daily_activity = session.scalars(select(DailyActivity).where(
             DailyActivity.user_id == user.id
-        )).all()
+        ).order_by(DailyActivity.date.desc()).limit(10)).all()
         daily_data = []
         for day in daily_activity:
             daily_data.append({

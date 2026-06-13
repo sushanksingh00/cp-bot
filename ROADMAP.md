@@ -250,19 +250,19 @@ Learn deployment and infrastructure.
 
 ### Docker
 
-* [ ] Dockerfile
-* [ ] Docker Compose
+* [x] Dockerfile
+* [x] Docker Compose
 
 ### Services
 
-* [ ] FastAPI container
-* [ ] PostgreSQL container
-* [ ] Redis container
+* [x] FastAPI container
+* [x] PostgreSQL container
+* [x] Redis container
 
 ### Deployment
 
-* [ ] Environment configuration
-* [ ] Production deployment
+* [x] Environment configuration
+* [x] Production deployment
 
 ### Learn
 

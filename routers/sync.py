@@ -10,7 +10,7 @@ from schemas import UserCreate, UserBase
 from datetime import datetime, UTC
 from celery.result import AsyncResult
 
-from tasks.tasks import long_task, sync_user
+from tasks.task import long_task, sync_user
 from core.celery_app import celery_app
 
 router = APIRouter(
