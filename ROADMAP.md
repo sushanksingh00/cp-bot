@@ -275,8 +275,95 @@ Learn deployment and infrastructure.
 You can run the complete backend stack anywhere.
 
 ---
+# PHASE 7 — Frontend Foundations
 
-# PHASE 7 — Testing
+## Goal
+
+Start becoming a Full Stack Developer.
+
+### Learn React
+
+* [x] Components
+* [x] Props
+* [x] State
+* [x] useEffect
+* [x] useState
+* [x] Routing
+
+### Project Setup
+
+* [x] Vite
+* [x] React
+* [ ] TailwindCSS
+
+### API Integration
+
+* [x] Auth integration
+* [x] Dashboard integration
+* [x] Analytics integration
+
+### Outcome
+
+Frontend can consume all backend APIs.
+
+---
+
+# PHASE 8 — Dashboard UI
+
+## Goal
+
+Build the complete user experience.
+
+### Pages
+
+* [ ] Login
+* [ ] Register
+* [ ] Dashboard
+* [ ] Recommendations
+
+### Dashboard
+
+* [ ] User profile
+* [ ] Current rating
+* [ ] Max rating
+* [ ] Weak tags
+* [ ] Strong tags
+* [ ] Skill estimates
+
+### Outcome
+
+Complete full-stack application.
+
+---
+
+# PHASE 9 — Data Visualization
+
+## Goal
+
+Present analytics professionally.
+
+### Charts
+
+* [ ] Rating graph
+* [ ] Tag performance graph
+* [ ] Activity graph
+* [ ] Contest performance graph
+
+### Heatmaps
+
+* [ ] Daily activity heatmap
+
+### Libraries
+
+* [ ] Recharts
+
+### Outcome
+
+Analytics become visually useful.
+
+---
+
+# PHASE 10 — Testing
 
 ## Goal
 
@@ -306,112 +393,50 @@ You can refactor safely and catch regressions.
 
 ---
 
-# PHASE 8 — Frontend Foundations
-
-## Goal
-
-Start becoming a Full Stack Developer.
-
-### Learn React
-
-* [ ] Components
-* [ ] Props
-* [ ] State
-* [ ] useEffect
-* [ ] useState
-* [ ] Routing
-
-### Project Setup
-
-* [ ] Vite
-* [ ] React
-* [ ] TailwindCSS
-
-### API Integration
-
-* [ ] Auth integration
-* [ ] Dashboard integration
-* [ ] Analytics integration
-
-### Outcome
-
-Frontend can consume all backend APIs.
-
----
-
-# PHASE 9 — Dashboard UI
-
-## Goal
-
-Build the complete user experience.
-
-### Pages
-
-* [ ] Login
-* [ ] Register
-* [ ] Dashboard
-* [ ] Recommendations
-
-### Dashboard
-
-* [ ] User profile
-* [ ] Current rating
-* [ ] Max rating
-* [ ] Weak tags
-* [ ] Strong tags
-* [ ] Skill estimates
-
-### Outcome
-
-Complete full-stack application.
-
----
-
-# PHASE 10 — Data Visualization
-
-## Goal
-
-Present analytics professionally.
-
-### Charts
-
-* [ ] Rating graph
-* [ ] Tag performance graph
-* [ ] Activity graph
-* [ ] Contest performance graph
-
-### Heatmaps
-
-* [ ] Daily activity heatmap
-
-### Libraries
-
-* [ ] Recharts
-
-### Outcome
-
-Analytics become visually useful.
-
----
-
 # PHASE 11 — AI Layer
+
+## Goal
+
+Add intelligent features using AI.
+
+### Features
 
 * [ ] AI Insights
 * [ ] Weekly Improvement Reports
 * [ ] Personalized Study Plans
 * [ ] Weakness Explanations
 
+### Outcome
+
+Platform provides personalized guidance instead of only analytics.
+
 ---
 
 # PHASE 12 — Resume-Level Engineering
+
+## Goal
+
+Polish the project to production and portfolio quality.
+
+### Engineering
 
 * [ ] GitHub Actions
 * [ ] Logging
 * [ ] Health Checks
 * [ ] API Docs
 * [ ] Architecture Docs
+
+### Platform Expansion
+
 * [ ] LeetCode Integration
 * [ ] CodeChef Integration
+
+### Deployment
+
 * [ ] Public Deployment
 * [ ] Demo Video
 * [ ] Portfolio Entry
+
+### Outcome
+
+Production-ready portfolio project suitable for internships and software engineering roles.

@@ -9,6 +9,17 @@ app = FastAPI(
     title= "AI Analytics for CP"
 )
 
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173" #frontend ka origin
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 from routers.sync import router as sync_router
 from routers.users import router as user_router
 from routers.recommendations import router as recommendation_router
