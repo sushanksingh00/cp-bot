@@ -329,5 +329,5 @@ This project helped me gain hands-on experience with:
 B.Tech CSE (Software Engineering)
 VIT-AP University
 
-GitHub: github.com/sushanksingh00
-LinkedIn: <your-linkedin>
+GitHub: https://github.com/sushanksingh00
+LinkedIn: https://www.linkedin.com/in/sushank-singh-92a80731a/
