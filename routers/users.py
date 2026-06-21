@@ -102,17 +102,23 @@ def dashboard(current_user : AppUsers = Depends(get_current_user)):
 
         recommendation_data = []
 
+        upsolve_count = 0
+
         for rec in recommendations:
 
+            if rec.recommendation_type == "upsolve":
+                upsolve_count += 1
+                continue
+
             recommendation_data.append({
-                "recommendation_type":
-                    rec.recommendation_type,
+                "title": rec.recommendation_type.replace("_", " ").title(),
+                "message": rec.reason
+            })
 
-                "reason":
-                    rec.reason,
-
-                "priority_score":
-                    rec.priority_score
+        if upsolve_count:
+            recommendation_data.append({
+                "title": "Upsolve Problems",
+                "message": f"You have {upsolve_count} contest problems waiting for upsolve."
             })
 
         recent_activity = session.scalars(
@@ -123,24 +129,32 @@ def dashboard(current_user : AppUsers = Depends(get_current_user)):
             .order_by(
                 DailyActivity.date.desc()
             )
-            .limit(7)
         ).all()
 
         activity_data = []
+        total_questions = 0
+        total_days_active = 0
 
         for day in recent_activity:
+            if(total_days_active < 7):
+                activity_data.append({
+                    "date": day.date,
+                    "problems_attempted":
+                        day.problems_attempted,
 
-            activity_data.append({
-                "date": day.date,
-                "problems_attempted":
-                    day.problems_attempted,
+                    "problems_solved":
+                        day.problems_solved,
 
-                "problems_solved":
-                    day.problems_solved,
+                    "average_rating":
+                        day.average_rating
+                })
+            total_questions += day.problems_solved
+            total_days_active +=1
 
-                "average_rating":
-                    day.average_rating
-            })
+        contest_data = session.scalars(select(ContestPerformance).where(ContestPerformance.user_id == user.id)).all()
+        total_contests = 0
+        for contest in contest_data:
+            total_contests += 1
 
     # return {
     #     "user": user_data,
@@ -153,7 +167,10 @@ def dashboard(current_user : AppUsers = Depends(get_current_user)):
         "user": user_data,
         "weakest_tags": weak_tag_data,
         "recommendations": recommendation_data,
-        "recent_activity": activity_data
+        "recent_activity": activity_data,
+        "total_contests": total_contests,
+        "total_questions": total_questions,
+        "total_days_active": total_days_active,
     }   
 
     redis_client.setex(

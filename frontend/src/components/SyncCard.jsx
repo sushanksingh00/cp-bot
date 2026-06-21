@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-function SyncCard() {
+function SyncCard({handle}) {
 
-    const [handle, setHandle] = useState("");
+    // const [handle, setHandle] = useState("");
     const [taskId, setTaskId] = useState(null);
     const [status, setStatus] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const startSync = async () => {
 
@@ -62,6 +64,11 @@ function SyncCard() {
                     setLoading(false);
                 }
 
+                if (response.data.state === "SUCCESS") {
+                    navigate("/");
+                }
+
+
             } catch (error) {
 
                 console.log(error);
@@ -77,28 +84,25 @@ function SyncCard() {
     }, [taskId]);
 
     return (
-        <div className="min-w-1/3 max-w-md p-6 rounded-xl shadow-lg bg-white border">
+        <div className="mt-6 border-t pt-4">
+            <h3 className="font-semibold mb-2">
+                Data Sync
+            </h3>
 
-            <h2 className="font-bold text-2xl mb-2">Sync Codeforces</h2>
-
-            <input
-                type="text"
-                placeholder="Codeforces Handle"
-                value={handle}
-                onChange={(e) => setHandle(e.target.value)}
-                className="border p-2 rounded mb-2"
-            />
 
             <button
                 onClick={startSync}
                 disabled={loading}
-                className="px-4 py-2 rounded bg-blue-500 border mb-2"
+                className="w-full px-4 py-2 rounded-lg bg-blue-500 text-white"
             >
-                {loading ? "Syncing..." : "Sync"}
+                {loading ? "Syncing..." : "Sync Codeforces"}
             </button>
 
-            <p><span className="font-semibold">Status: </span>{status}</p>
-
+            {status && (
+                <p className="text-sm text-gray-600 mt-2">
+                    Status: {status}
+                </p>
+            )}
         </div>
     );
 }

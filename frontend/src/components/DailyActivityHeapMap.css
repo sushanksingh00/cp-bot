@@ -1,0 +1,24 @@
+.react-calendar-heatmap .react-calendar-heatmap-month-label {
+    fill: #1f2937;
+    font: bold;
+}
+
+.color-empty {
+    fill: #e5e7eb;
+}
+
+.color-github-1 {
+    fill: #bfdbfe;
+}
+
+.color-github-2 {
+    fill: #60a5fa;
+}
+
+.color-github-3 {
+    fill: #3b82f6;
+}
+
+.color-github-4 {
+    fill: #1d4ed8;
+}

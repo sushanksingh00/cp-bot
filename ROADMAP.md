@@ -182,16 +182,16 @@ Turn data into intelligence.
 
 ### Progress Analytics
 
-* [ ] Rating progression
-* [ ] Tag progression
-* [ ] Activity streaks
-* [ ] Contest trend analysis
+* [x] Rating progression
+* [x] Tag progression
+* [x] Activity streaks
+* [x] Contest trend analysis
 
 ### New APIs
 
-* [ ] /skills
-* [ ] /progress
-* [ ] /contest-analysis
+* [x] /skills
+* [x] /progress
+* [x] /contest-analysis
 
 ### Learn
 
@@ -294,7 +294,7 @@ Start becoming a Full Stack Developer.
 
 * [x] Vite
 * [x] React
-* [ ] TailwindCSS
+* [x] TailwindCSS
 
 ### API Integration
 
@@ -316,19 +316,19 @@ Build the complete user experience.
 
 ### Pages
 
-* [ ] Login
-* [ ] Register
-* [ ] Dashboard
-* [ ] Recommendations
+* [x] Login
+* [x] Register
+* [x] Dashboard
+* [x] Recommendations
 
 ### Dashboard
 
-* [ ] User profile
-* [ ] Current rating
-* [ ] Max rating
-* [ ] Weak tags
-* [ ] Strong tags
-* [ ] Skill estimates
+* [x] User profile
+* [x] Current rating
+* [x] Max rating
+* [x] Weak tags
+* [x] Strong tags
+* [x] Skill estimates
 
 ### Outcome
 
@@ -344,18 +344,18 @@ Present analytics professionally.
 
 ### Charts
 
-* [ ] Rating graph
-* [ ] Tag performance graph
+* [x] Rating graph
+* [x] Tag performance graph
 * [ ] Activity graph
-* [ ] Contest performance graph
+* [x] Contest performance graph
 
 ### Heatmaps
 
-* [ ] Daily activity heatmap
+* [x] Daily activity heatmap
 
 ### Libraries
 
-* [ ] Recharts
+* [x] Recharts
 
 ### Outcome
 

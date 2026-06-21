@@ -6,6 +6,7 @@ from services.auth_services import get_current_user
 from helpers import get_linked_cf_user
 from schemas import ContestResponse, DailyActivityResponse, TagsResponse
 from typing import List
+from sqlalchemy import select, inspect
 
 router = APIRouter(
     prefix="/users",
@@ -21,8 +22,9 @@ def contest_info(current_user : AppUsers = Depends(get_current_user)):
 
 
     with sessionLocal() as session:
+        pk_column = inspect(ContestPerformance).primary_key[0]
         contest_history = session.scalars(select(ContestPerformance)
-                        .where(ContestPerformance.user_id == user.id)).all()
+                        .where(ContestPerformance.user_id == user.id).order_by(pk_column.desc())).all()
         contest_data = []
         for contest in contest_history:
             contest_data.append({

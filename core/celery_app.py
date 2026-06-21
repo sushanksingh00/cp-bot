@@ -7,10 +7,12 @@ import os
 #     broker="redis://localhost:6379/0"
 # )
 
+from config import REDIS_URL
+
 celery_app = Celery(
     "tasks",
-    broker=os.getenv("REDIS_URL"),
-    backend=os.getenv("REDIS_URL")
+    broker=REDIS_URL,
+    backend=REDIS_URL
 )
 
 celery_app.conf.imports = ("tasks.task",)

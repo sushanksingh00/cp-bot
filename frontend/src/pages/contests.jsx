@@ -1,24 +1,38 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ContestsCard from "../components/ContestsCard";
-import Navbar from "../components/Navbar";
+import ContestRatingChart from "../components/ContestRatingChart";
+import Layout from "../components/Layout";
+import { useNavigate } from "react-router-dom";
+
 
 function Contests() {
     const [data, setData] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
-            const token = localStorage.getItem("token");
-            const response = await axios.get(
-                "http://localhost:8000/users/contests",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            try{
+            
+                const token = localStorage.getItem("token");
+                const response = await axios.get(
+                    "http://localhost:8000/users/contests",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
 
-            setData(response.data);
+                    setData(response.data);
+                }
+                catch(error){
+
+                    if(error.response?.status == 401){
+                        localStorage.removeItem("token");
+                        navigate("/login");
+                    }
+                } 
         };
 
         fetchData();
@@ -27,10 +41,13 @@ function Contests() {
     if (!data) return <h1>Loading...</h1>;
 
     return (
-        <>
-        <Navbar />
-        <ContestsCard contests={data} />;
-        </>
+        <Layout>
+            <div className="p-6 ">
+                
+                    <ContestsCard contests={data} />
+
+            </div>
+        </Layout>
     )
 }
 

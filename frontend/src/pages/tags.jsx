@@ -1,24 +1,36 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import TagsCard from "../components/TagsCard";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Sidebar";
+import Layout from "../components/Layout";
+import { useNavigate } from "react-router-dom";
+import TagPerformanceGraph from "../components/TagPerfomanceChart";
 
 function Tags() {
     const [data, setData] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
-            const token = localStorage.getItem("token");
-            const response = await axios.get(
-                "http://localhost:8000/users/tags",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
 
-            setData(response.data);
+            try{
+                const token = localStorage.getItem("token");
+                const response = await axios.get(
+                    "http://localhost:8000/users/tags",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                setData(response.data);
+            }catch(error){
+                if(error.response?.status == 401){
+                    localStorage.removeItem("token");
+                    navigate("/login");
+                }
+            }
         };
 
         fetchData();
@@ -27,11 +39,17 @@ function Tags() {
     if (!data) return <h1>Loading...</h1>;
 
     return(
-        <>
-        <Navbar />
+        <Layout>
+
+            <div className="p-7">
+
         
-        <TagsCard tags={data} />;
-        </>
+                <div className="p-6">
+                    <TagsCard tags={data} />;
+                </div>
+            </div>
+
+        </Layout>
     )
 }
 

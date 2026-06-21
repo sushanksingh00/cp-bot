@@ -8,7 +8,7 @@ const IndexCard = ({ data }) => {
             </h2>
 
             <p className="mb-2">
-                <span className="font-semibold">Handle:</span> {data.handle}
+                <span className="font-semibold">Handle :</span> {data.handle}
             </p>
 
             <p className="mb-2">
