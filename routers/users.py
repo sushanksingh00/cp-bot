@@ -191,12 +191,12 @@ def dashboard(current_user : AppUsers = Depends(get_current_user), session: Sess
 
 
 @router.delete("/delete") #need to be updated
-def delete_user_route(current_user : AppUsers = Depends(get_current_user)):
+def delete_user_route(current_user : AppUsers = Depends(get_current_user), session: Session = Depends(get_db)):
 
-    user = get_linked_cf_user(current_user.id)
+    user = get_linked_cf_user(current_user.id, session)
 
     if user:
-        delete_user(user.platform, user.handle)
+        delete_user(user.platform, user.handle, session)
 
     return {"message":"User deleted Succesfully"}
 
