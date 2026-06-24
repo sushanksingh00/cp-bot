@@ -2,28 +2,51 @@ name: Backend Tests
 
 on:
   push:
-    branches:
-      - main
-      - develop
-
   pull_request:
-    branches:
-      - main
 
 jobs:
   test:
 
     runs-on: ubuntu-latest
 
+    services:
+
+      postgres:
+        image: postgres:16
+
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cp_analytics_test
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+
+        ports:
+          - 6379:6379
+
+    env:
+      DB_URL_TEST: postgresql://postgres:postgres@localhost:5432/cp_analytics_test
+      SECRET_KEY: test-secret-key
+
     steps:
 
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Install Dependencies
         run: |
