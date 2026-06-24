@@ -13,7 +13,7 @@ def fetch_user_by_handle(platform:str, handle:str):
         if user:
             return user
         return None
-    
+
 
 def insert_user(platform: str,
                 handle: str,

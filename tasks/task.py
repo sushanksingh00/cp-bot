@@ -1,6 +1,6 @@
 from core.celery_app import celery_app
 import time
-from services.analytics_serives import *
+from services.analytics_serivces import *
 from services.recommendation_services import *
 from services.sync_services import *
 from core.redis_client import redis_client

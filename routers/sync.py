@@ -2,7 +2,7 @@ from crud import *
 from externalapi import *
 from fastapi import APIRouter, Depends
 from fastapi import HTTPException
-from services.analytics_serives import *
+from services.analytics_serivces import *
 from services.recommendation_services import *
 from services.sync_services import *
 from services.auth_services import get_current_user
@@ -24,7 +24,7 @@ def sync(user: UserBase, current_user: AppUsers = Depends(get_current_user)):
 
     task = sync_user.delay(
         user.handle, #fake handle
-        current_user.id
+        current_user.id #app_user_id
     )
 
     return {

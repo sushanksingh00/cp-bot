@@ -68,14 +68,14 @@ def login_user(username, password):
 def get_current_user(request: Request): #is_auth
     token = request.headers.get("authorization")
     if not token:
-        raise HTTPException(401, detail="Unautharized")
+        raise HTTPException(401, detail="Unautharized, token not available")
     
     token = token.split(" ")[-1]
 
     try:
         data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    except Exception:
-        raise HTTPException(401,detail="Unautharized")
+    except Exception as e:
+        raise HTTPException(401,detail=f"Unautharized, it is not a jwt token {e}")
     
     user_id = data["id"]
     exp_time = datetime.fromtimestamp(
@@ -91,7 +91,7 @@ def get_current_user(request: Request): #is_auth
             AppUsers.id == user_id
         ))
         if not user_data:
-            raise HTTPException(401, detail="User details did not match")
+            raise HTTPException(401, detail="Unautharized, User details did not match")
         
         return user_data
         
