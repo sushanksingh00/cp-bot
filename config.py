@@ -3,6 +3,7 @@ import os
 
 load_dotenv(".env")
 DB_URL = os.getenv("DB_URL")
+DB_URL_TEST = os.getenv("DB_URL_TEST")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")

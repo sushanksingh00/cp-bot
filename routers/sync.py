@@ -13,18 +13,22 @@ from celery.result import AsyncResult
 from tasks.task import long_task, sync_user
 from core.celery_app import celery_app
 
+from sqlalchemy.orm import Session
+from database import get_db
+
 router = APIRouter(
     prefix="/sync",
     tags=["Sync"]
 )
 
 @router.post("/codeforces")
-def sync(user: UserBase, current_user: AppUsers = Depends(get_current_user)):
+def sync(user: UserBase, current_user: AppUsers = Depends(get_current_user), session: Session = Depends(get_db)):
 
 
     task = sync_user.delay(
         user.handle, #fake handle
-        current_user.id #app_user_id
+        current_user.id, #app_user_id
+        session
     )
 
     return {

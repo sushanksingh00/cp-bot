@@ -16,9 +16,11 @@ def test_dashboard_independent(
         "/users/dashboard",
         headers=header_token
     )
+    print(response.json())
 
     assert response.status_code == 200
 
     data = response.json()
+
 
     assert data

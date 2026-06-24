@@ -8,6 +8,9 @@ from core.redis_client import redis_client
 import json
 from schemas import ProfileResponse
 
+from sqlalchemy.orm import Session
+from database import get_db
+
 router = APIRouter(
     prefix="/users",
     tags=["Users"] # for swagger ui
@@ -15,9 +18,9 @@ router = APIRouter(
 
 
 @router.get("/", response_model=ProfileResponse)
-def profile(current_user : AppUsers = Depends(get_current_user)):
+def profile(current_user : AppUsers = Depends(get_current_user), session: Session = Depends(get_db)):
     
-    user = get_linked_cf_user(current_user.id)
+    user = get_linked_cf_user(current_user.id, session)
 
 
     # return {
@@ -30,9 +33,9 @@ def profile(current_user : AppUsers = Depends(get_current_user)):
 
 
 @router.get("/dashboard")
-def dashboard(current_user : AppUsers = Depends(get_current_user)):
+def dashboard(current_user : AppUsers = Depends(get_current_user), session: Session = Depends(get_db)):
 
-    user = get_linked_cf_user(current_user.id)
+    user = get_linked_cf_user(current_user.id, session)
 
     cache_key = f"dashboard:{user.id}"
 
@@ -56,105 +59,106 @@ def dashboard(current_user : AppUsers = Depends(get_current_user)):
 
     user = fetch_user_by_handle(
         "codeforces",
-        user.handle
+        user.handle,
+        session
     )
 
-    with sessionLocal() as session:
 
-        user_data = {
-            "handle": user.handle,
-            "platform": user.platform,
-            "curr_rating": user.curr_rating,
-            "max_rating": user.max_rating,
-            "rank": user.rank,
-            "max_rank": user.max_rank,
-        }
 
-        weakest_tags = session.scalars(
-            select(TagPerformance)
-            .where(
-                TagPerformance.user_id == user.id
-            )
-            .order_by(
-                TagPerformance.weakness_score.desc()
-            )
-            .limit(3)
-        ).all()
+    user_data = {
+        "handle": user.handle,
+        "platform": user.platform,
+        "curr_rating": user.curr_rating,
+        "max_rating": user.max_rating,
+        "rank": user.rank,
+        "max_rank": user.max_rank,
+    }
 
-        weak_tag_data = []
+    weakest_tags = session.scalars(
+        select(TagPerformance)
+        .where(
+            TagPerformance.user_id == user.id
+        )
+        .order_by(
+            TagPerformance.weakness_score.desc()
+        )
+        .limit(3)
+    ).all()
 
-        for tag in weakest_tags:
+    weak_tag_data = []
 
-            weak_tag_data.append({
-                "tag_name": tag.tag_name,
-                "success_rate": tag.success_rate,
-                "weakness_score": tag.weakness_score
+    for tag in weakest_tags:
+
+        weak_tag_data.append({
+            "tag_name": tag.tag_name,
+            "success_rate": tag.success_rate,
+            "weakness_score": tag.weakness_score
+        })
+
+    recommendations = session.scalars(
+        select(RecommendationQueue)
+        .where(
+            RecommendationQueue.user_id == user.id,
+            RecommendationQueue.is_completed == False,
+            RecommendationQueue.is_dismissed == False
+        )
+    ).all()
+
+    recommendation_data = []
+
+    upsolve_count = 0
+
+    for rec in recommendations:
+
+        if rec.recommendation_type == "upsolve":
+            upsolve_count += 1
+            continue
+
+        recommendation_data.append({
+            "title": rec.recommendation_type.replace("_", " ").title(),
+            "message": rec.reason
+        })
+
+    if upsolve_count:
+        recommendation_data.append({
+            "title": "Upsolve Problems",
+            "message": f"You have {upsolve_count} contest problems waiting for upsolve."
+        })
+
+    recent_activity = session.scalars(
+        select(DailyActivity)
+        .where(
+            DailyActivity.user_id == user.id
+        )
+        .order_by(
+            DailyActivity.date.desc()
+        )
+    ).all()
+
+    activity_data = []
+    total_questions = 0
+    total_days_active = 0
+
+    for day in recent_activity:
+        if(total_days_active < 7):
+            activity_data.append({
+                "date": day.date,
+                "problems_attempted":
+                    day.problems_attempted,
+
+                "problems_solved":
+                    day.problems_solved,
+
+                "average_rating":
+                    day.average_rating
             })
+        total_questions += day.problems_solved
+        total_days_active +=1
 
-        recommendations = session.scalars(
-            select(RecommendationQueue)
-            .where(
-                RecommendationQueue.user_id == user.id,
-                RecommendationQueue.is_completed == False,
-                RecommendationQueue.is_dismissed == False
-            )
-        ).all()
-
-        recommendation_data = []
-
-        upsolve_count = 0
-
-        for rec in recommendations:
-
-            if rec.recommendation_type == "upsolve":
-                upsolve_count += 1
-                continue
-
-            recommendation_data.append({
-                "title": rec.recommendation_type.replace("_", " ").title(),
-                "message": rec.reason
-            })
-
-        if upsolve_count:
-            recommendation_data.append({
-                "title": "Upsolve Problems",
-                "message": f"You have {upsolve_count} contest problems waiting for upsolve."
-            })
-
-        recent_activity = session.scalars(
-            select(DailyActivity)
-            .where(
-                DailyActivity.user_id == user.id
-            )
-            .order_by(
-                DailyActivity.date.desc()
-            )
-        ).all()
-
-        activity_data = []
-        total_questions = 0
-        total_days_active = 0
-
-        for day in recent_activity:
-            if(total_days_active < 7):
-                activity_data.append({
-                    "date": day.date,
-                    "problems_attempted":
-                        day.problems_attempted,
-
-                    "problems_solved":
-                        day.problems_solved,
-
-                    "average_rating":
-                        day.average_rating
-                })
-            total_questions += day.problems_solved
-            total_days_active +=1
-
-        contest_data = session.scalars(select(ContestPerformance).where(ContestPerformance.user_id == user.id)).all()
-        total_contests = 0
-        for contest in contest_data:
-            total_contests += 1
+    contest_data = session.scalars(select(ContestPerformance).where(ContestPerformance.user_id == user.id)).all()
+    total_contests = 0
+    for contest in contest_data:
+        total_contests += 1
 
     # return {
     #     "user": user_data,

@@ -4,7 +4,19 @@ from main import app
 import pytest
 import uuid
 from crud import delete_user
+from database import Base, test_engine
 
+from database import get_db
+from database import test_engine
+from sqlalchemy.orm import sessionmaker
+
+TestingSessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=test_engine
+)
+
+from fastapi import Depends
 
 
 @pytest.fixture
@@ -105,13 +117,37 @@ def check_status(client, task_id, header_token):
 #independent tesitng of the every endpoint
 
 import pytest
-from database import sessionLocal
 
+@pytest.fixture(scope="session", autouse=True)
+def setup_database():
+
+    Base.metadata.create_all(bind=test_engine)
+
+    yield
+
+    Base.metadata.drop_all(bind=test_engine)
 
 @pytest.fixture
 def db():
-    with sessionLocal() as session:
-        yield session
+
+    connection = TestingSessionLocal()
+
+    try:
+        yield connection
+    finally:
+        connection.close()
+
+def override_get_db():
+
+    db = TestingSessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+app.dependency_overrides[get_db] = override_get_db
 
 
 #fake cp user

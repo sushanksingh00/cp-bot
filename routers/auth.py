@@ -4,6 +4,10 @@ from externalapi import *
 from fastapi import HTTPException
 from services.auth_services import register_user, login_user
 from schemas import AppUserLogin, AppUserRegister
+from sqlalchemy.orm import Session
+from database import get_db
+
+from fastapi import Depends
 
 router = APIRouter(
     prefix="/auth",
@@ -11,14 +15,14 @@ router = APIRouter(
 )
 
 @router.post("/register")
-def register(user: AppUserRegister):
+def register(user: AppUserRegister, session: Session = Depends(get_db)):
     return register_user(user.username, 
                          user.password, 
-                         user.email)
+                         user.email, session)
 
 @router.post("/login")
-def login(user: AppUserLogin):
-    return login_user(user.username, user.password)
+def login(user: AppUserLogin, session: Session = Depends(get_db)):
+    return login_user(user.username, user.password, session)
 
 from fastapi import Depends
 

@@ -4,6 +4,9 @@ from pwdlib import PasswordHash
 from config import SECRET_KEY, ALGORITHM
 from datetime import datetime, timedelta, timezone
 import jwt
+from database import get_db
+from sqlalchemy.orm import Session
+from fastapi import Depends
 
 
 ACCESS_TOKEN_EXPIRE_MINUTES=30
@@ -14,31 +17,34 @@ def get_hash_password(password):
 def verify_password(plain_password, hashed_password):
     return password_hash.verify(plain_password, hashed_password)
 
-def register_user(username, password, email):
-    with sessionLocal() as session:
-        username_user = session.scalar(select(AppUsers).where(
-            AppUsers.username == username
-        ))
-        if username_user:
-            raise HTTPException(401, detail="User already registered !")
-        
-        email_user = session.scalar(select(AppUsers).where(
-            AppUsers.email == email
-        ))
-        if email_user:
-            raise HTTPException(401, detail="Email Already Registered !")
-        
+
+def register_user(username, password, email, session
+):
+
+    username_user = session.scalar(select(AppUsers).where(
+        AppUsers.username == username
+    ))
+    if username_user:
+        raise HTTPException(401, detail="User already registered !")
+    
+    email_user = session.scalar(select(AppUsers).where(
+        AppUsers.email == email
+    ))
+    if email_user:
+        raise HTTPException(401, detail="Email Already Registered !")
+    
 
 
-        new_user = AppUsers(
-            username = username,
-            password = get_hash_password(password),
-            email = email
-        )
+    new_user = AppUsers(
+        username = username,
+        password = get_hash_password(password),
+        email = email
+    )
 
-        session.add(new_user)
-        session.commit()
-        session.refresh(new_user)
+    session.add(new_user)
+    session.commit()
+    session.refresh(new_user)
+
     return {
         "id": new_user.id,
         "username": new_user.username,
@@ -46,26 +52,26 @@ def register_user(username, password, email):
     }
         
 
-def login_user(username, password):
-    with sessionLocal() as session:
-        username_user = session.scalar(select(AppUsers).where(
-            AppUsers.username == username
-        ))
-        if not username_user:
-            raise HTTPException(401, detail="Username not Found !")
-        
-        if not verify_password(password, username_user.password):
-            raise HTTPException(401, detail="Wrong Password Entered !")
-        
-        exp_time = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        print("exp time is", exp_time)
+def login_user(username, password, session):
 
-        token = jwt.encode({"id": username_user.id, "exp":exp_time}, SECRET_KEY, algorithm=ALGORITHM)
-        
-        
-        return {"token" : token}
+    username_user = session.scalar(select(AppUsers).where(
+        AppUsers.username == username
+    ))
+    if not username_user:
+        raise HTTPException(401, detail="Username not Found !")
+    
+    if not verify_password(password, username_user.password):
+        raise HTTPException(401, detail="Wrong Password Entered !")
+    
+    exp_time = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    print("exp time is", exp_time)
 
-def get_current_user(request: Request): #is_auth
+    token = jwt.encode({"id": username_user.id, "exp":exp_time}, SECRET_KEY, algorithm=ALGORITHM)
+    
+    
+    return {"token" : token}
+
+def get_current_user(request: Request, session: Session = Depends(get_db)): #is_auth
     token = request.headers.get("authorization")
     if not token:
         raise HTTPException(401, detail="Unautharized, token not available")
@@ -86,13 +92,13 @@ def get_current_user(request: Request): #is_auth
 
     print("remaing time is", remaining)    
 
-    with sessionLocal() as session:
-        user_data = session.scalar(select(AppUsers).where(
-            AppUsers.id == user_id
-        ))
-        if not user_data:
-            raise HTTPException(401, detail="Unautharized, User details did not match")
-        
-        return user_data
+
+    user_data = session.scalar(select(AppUsers).where(
+        AppUsers.id == user_id
+    ))
+    if not user_data:
+        raise HTTPException(401, detail="Unautharized, User details did not match")
+    
+    return user_data
         
 

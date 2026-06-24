@@ -13,7 +13,7 @@ def long_task():
     return "done"
 
 @celery_app.task
-def sync_user(handle_, app_user_id):
+def sync_user(handle_, app_user_id, session):
     # try:
     #     cf_data = fetch_cf_userdata(handle_)[0] 
     #     print("ye thik h sync wala")
@@ -33,10 +33,10 @@ def sync_user(handle_, app_user_id):
     )
     if existing_user:
         update_user("codeforces", handle, cf_data["rating"],
-                    cf_data["maxRating"], cf_data["rank"], cf_data["maxRank"], app_user_id)
+                    cf_data["maxRating"], cf_data["rank"], cf_data["maxRank"], app_user_id, session)
     else:
         insert_user("codeforces", handle, cf_data["rating"],
-                    cf_data["maxRating"], cf_data["rank"], cf_data["maxRank"], app_user_id)
+                    cf_data["maxRating"], cf_data["rank"], cf_data["maxRank"], app_user_id, session)
         
     with sessionLocal() as session:
         sync_user_contests(session, handle)

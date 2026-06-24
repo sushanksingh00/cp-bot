@@ -7,6 +7,8 @@ from services.auth_services import get_current_user
 from helpers import get_linked_cf_user
 from typing import List
 from schemas import RecommendationResponse, UpsolveResponse
+from sqlalchemy.orm import Session
+from database import get_db
 
 router = APIRouter(
     prefix="/users",
@@ -16,46 +18,46 @@ router = APIRouter(
 
 @router.get("/recommendations", response_model=List[RecommendationResponse])
 
-def recommendations_info(current_user : AppUsers = Depends(get_current_user)):
+def recommendations_info(current_user : AppUsers = Depends(get_current_user), session: Session = Depends(get_db)):
 
-    user = get_linked_cf_user(current_user.id)
+    user = get_linked_cf_user(current_user.id, session)
 
-    with sessionLocal() as session:
-        rec_rows = session.scalars(select(RecommendationQueue).where(
-            RecommendationQueue.user_id == user.id,
-            RecommendationQueue.recommendation_type != "upsolve"
-        )).all()
 
-        recommnedation_data =[]
-        for row in rec_rows:
-            
-            if row.recommendation_type == "consistency_boost":
-                days_inactive  = row.reason.split(" ")[-2] # no activity for x days ....so -2
-                if( days_inactive < '7'):
-                    continue
+    rec_rows = session.scalars(select(RecommendationQueue).where(
+        RecommendationQueue.user_id == user.id,
+        RecommendationQueue.recommendation_type != "upsolve"
+    )).all()
 
-            recommnedation_data.append({
-                "recommendation_type": row.recommendation_type,
-                "reason": row.reason
-            })
+    recommnedation_data =[]
+    for row in rec_rows:
+        
+        if row.recommendation_type == "consistency_boost":
+            days_inactive  = row.reason.split(" ")[-2] # no activity for x days ....so -2
+            if( days_inactive < '7'):
+                continue
+
+        recommnedation_data.append({
+            "recommendation_type": row.recommendation_type,
+            "reason": row.reason
+        })
     return recommnedation_data
 
 @router.get("/upsolve", response_model=List[UpsolveResponse])
 
-def upsolve(current_user : AppUsers = Depends(get_current_user)):
+def upsolve(current_user : AppUsers = Depends(get_current_user), session: Session = Depends(get_db)):
 
-    user = get_linked_cf_user(current_user.id)
+    user = get_linked_cf_user(current_user.id, session)
 
-    with sessionLocal() as session:
-        upsolve_rows = session.scalars(select(RecommendationQueue).where(
-            RecommendationQueue.user_id == user.id,
-            RecommendationQueue.recommendation_type == "upsolve"
-        )).all()
 
-        upsolve_data = []
-        for row in upsolve_rows:
-            upsolve_data.append({
-                "problem_contest_id" : row.problem_contest_id,
-                "problem_index" : row.problem_index,
-            })
+    upsolve_rows = session.scalars(select(RecommendationQueue).where(
+        RecommendationQueue.user_id == user.id,
+        RecommendationQueue.recommendation_type == "upsolve"
+    )).all()
+
+    upsolve_data = []
+    for row in upsolve_rows:
+        upsolve_data.append({
+            "problem_contest_id" : row.problem_contest_id,
+            "problem_index" : row.problem_index,
+        })
     return upsolve_data

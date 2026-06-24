@@ -5,14 +5,14 @@ from schemas import UserBase
 from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime, date
 
-def fetch_user_by_handle(platform:str, handle:str):
-    with sessionLocal() as session:
-        stmt = select(Users).where(Users.handle == handle,
-                                   Users.platform == platform)
-        user = session.scalar(stmt)
-        if user:
-            return user
-        return None
+def fetch_user_by_handle(platform:str, handle:str, session):
+
+    stmt = select(Users).where(Users.handle == handle,
+                                Users.platform == platform)
+    user = session.scalar(stmt)
+    if user:
+        return user
+    return None
 
 
 def insert_user(platform: str,
@@ -21,20 +21,20 @@ def insert_user(platform: str,
                 max_rating:int,
                 rank : str,
                 max_rank :str,
-                current_user_id:int):
-    with sessionLocal() as session:
-        user = Users(platform=platform,
-                     handle=handle,
-                     curr_rating=curr_rating,
-                     max_rating=max_rating,
-                     rank=rank,
-                     max_rank=max_rank,
-                     app_user_id = current_user_id)
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-        return user
-    
+                current_user_id:int, session):
+
+    user = Users(platform=platform,
+                    handle=handle,
+                    curr_rating=curr_rating,
+                    max_rating=max_rating,
+                    rank=rank,
+                    max_rank=max_rank,
+                    app_user_id = current_user_id)
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return user
+
 
 def update_user(platform: str,
                 handle: str,
@@ -42,95 +42,95 @@ def update_user(platform: str,
                 max_rating:int,
                 rank : str,
                 max_rank :str,
-                app_user_id:int):
-    with sessionLocal() as session:
-        user = session.query(Users).filter(
-            Users.handle==handle,
-            Users.platform == platform
-        ).first()
+                app_user_id:int, session):
 
-        if user is None: return None
+    user = session.query(Users).filter(
+        Users.handle==handle,
+        Users.platform == platform
+    ).first()
 
-        user.curr_rating = curr_rating
-        user.max_rating = max_rating
-        user.rank = rank
-        user.max_rank = max_rank
-        # Ensure this row gets an UPDATE even when values are unchanged.
-        user.updated_at = datetime.utcnow()
+    if user is None: return None
 
-        # Always bump last-sync timestamp even if values are unchanged.
-        # Otherwise SQLAlchemy may skip emitting an UPDATE.
-        user.updated_at = datetime.utcnow()
+    user.curr_rating = curr_rating
+    user.max_rating = max_rating
+    user.rank = rank
+    user.max_rank = max_rank
+    # Ensure this row gets an UPDATE even when values are unchanged.
+    user.updated_at = datetime.utcnow()
 
-        session.commit()
-        session.refresh(user)
-        return user
+    # Always bump last-sync timestamp even if values are unchanged.
+    # Otherwise SQLAlchemy may skip emitting an UPDATE.
+    user.updated_at = datetime.utcnow()
 
-def delete_user(platform:str, handle:str):
-    with sessionLocal() as session:
+    session.commit()
+    session.refresh(user)
+    return user
 
-        user = session.query(Users).filter(
-            Users.platform == platform,
-            Users.handle == handle
-        ).first()
-
-        if user is None: return None
-
-        user_id = session.query(Users.id).filter(
-            Users.platform ==platform,
-            Users.handle == handle
-        ).scalar()
-
-        account_id = session.query(Users.app_user_id).filter(
-            Users.platform ==platform,
-            Users.handle == handle
-        ).scalar()
-
-        contest_entries = session.query(ContestPerformance).filter(
-            ContestPerformance.user_id == user_id
-        )
-
-        problem_entries = session.query(ProblemAttempt).filter(
-            ProblemAttempt.user_id == user_id
-        )
-
-        daily_activity_entries = session.scalars(select(DailyActivity).where(
-            DailyActivity.user_id == user_id
-        ))
-
-        tag_performance_entries = session.scalars(select(TagPerformance).where(
-            TagPerformance.user_id == user_id
-        ))
-
-        recommendation_queue_entries = session.scalars(select(RecommendationQueue).where(
-            RecommendationQueue.user_id == user_id
-        ))
-
-        skill_estimate_entries = session.scalars(select(SkillEstimate).where(
-            SkillEstimate.account_id == user_id
-        ))
-
-        for skill in skill_estimate_entries:
-            session.delete(skill)
-
-        for recommendation in recommendation_queue_entries:
-            session.delete(recommendation)
-
-        for tag in tag_performance_entries:
-            session.delete(tag)
-
-        for daily in daily_activity_entries:
-            session.delete(daily)
+def delete_user(platform:str, handle:str, session):
 
 
-        for problem in problem_entries:
-            session.delete(problem)
+    user = session.query(Users).filter(
+        Users.platform == platform,
+        Users.handle == handle
+    ).first()
+
+    if user is None: return None
+
+    user_id = session.query(Users.id).filter(
+        Users.platform ==platform,
+        Users.handle == handle
+    ).scalar()
+
+    account_id = session.query(Users.app_user_id).filter(
+        Users.platform ==platform,
+        Users.handle == handle
+    ).scalar()
+
+    contest_entries = session.query(ContestPerformance).filter(
+        ContestPerformance.user_id == user_id
+    )
+
+    problem_entries = session.query(ProblemAttempt).filter(
+        ProblemAttempt.user_id == user_id
+    )
+
+    daily_activity_entries = session.scalars(select(DailyActivity).where(
+        DailyActivity.user_id == user_id
+    ))
+
+    tag_performance_entries = session.scalars(select(TagPerformance).where(
+        TagPerformance.user_id == user_id
+    ))
+
+    recommendation_queue_entries = session.scalars(select(RecommendationQueue).where(
+        RecommendationQueue.user_id == user_id
+    ))
+
+    skill_estimate_entries = session.scalars(select(SkillEstimate).where(
+        SkillEstimate.account_id == user_id
+    ))
+
+    for skill in skill_estimate_entries:
+        session.delete(skill)
+
+    for recommendation in recommendation_queue_entries:
+        session.delete(recommendation)
+
+    for tag in tag_performance_entries:
+        session.delete(tag)
+
+    for daily in daily_activity_entries:
+        session.delete(daily)
+
+
+    for problem in problem_entries:
+        session.delete(problem)
+    
+    for contest in contest_entries:
+        session.delete(contest)
         
-        for contest in contest_entries:
-            session.delete(contest)
-            
-        session.delete(user)
-        session.commit()
+    session.delete(user)
+    session.commit()
 
 
 def update_contest_performance(session,
