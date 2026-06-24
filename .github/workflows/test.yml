@@ -35,8 +35,14 @@ jobs:
           - 6379:6379
 
     env:
+      DB_URL: postgresql://postgres:postgres@localhost:5432/cp_analytics_test
       DB_URL_TEST: postgresql://postgres:postgres@localhost:5432/cp_analytics_test
+
       SECRET_KEY: test-secret-key
+      ALGORITHM: HS256
+
+      REDIS_HOST: localhost
+      REDIS_URL: redis://localhost:6379/0
 
     steps:
 
