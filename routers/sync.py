@@ -22,13 +22,12 @@ router = APIRouter(
 )
 
 @router.post("/codeforces")
-def sync(user: UserBase, current_user: AppUsers = Depends(get_current_user), session: Session = Depends(get_db)):
+def sync(user: UserBase, current_user: AppUsers = Depends(get_current_user)):
 
 
     task = sync_user.delay(
         user.handle, #fake handle
         current_user.id, #app_user_id
-        session
     )
 
     return {

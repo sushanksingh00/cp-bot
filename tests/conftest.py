@@ -19,6 +19,13 @@ TestingSessionLocal = sessionmaker(
 from fastapi import Depends
 
 
+
+# from core.celery_app import celery_app
+
+# celery_app.conf.task_always_eager = True
+# celery_app.conf.task_eager_propagates = True
+# celery_app.conf.task_store_eager_result = True
+
 @pytest.fixture
 def client():
     return TestClient(app)
@@ -62,11 +69,12 @@ def header_token(client, registered_user):
 
 @pytest.fixture
 def synced_header_token(client, header_token):
+
     response = client.post(
         "/sync/codeforces",
         json={
-            "platform" : "codeforces",
-            "handle" : "Um_nik"
+            "platform": "codeforces",
+            "handle": "Um_nik"
         },
         headers=header_token
     )
@@ -75,11 +83,16 @@ def synced_header_token(client, header_token):
 
     status = check_status(client, task_id, header_token)
 
-    assert status == "SUCCESS" 
+    assert status == "SUCCESS"
 
     yield header_token
 
-    delete_user("codeforces", "Um_nik")
+    db = TestingSessionLocal()
+
+    try:
+        delete_user("codeforces", "Um_nik", db)
+    finally:
+        db.close()
 
 
 

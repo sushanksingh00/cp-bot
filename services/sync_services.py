@@ -52,7 +52,7 @@ def compute_problem_attempt(session, handle):
     except Exception:
         raise HTTPException(status_code=404, detail="Either CF API is not Working or Username not found")
 
-    db_user = fetch_user_by_handle("codeforces", handle)
+    db_user = fetch_user_by_handle("codeforces", handle, session)
     if db_user is None:
         # User must exist in DB before we can attach activity rows.
         return {"message": "User not found in DB"}

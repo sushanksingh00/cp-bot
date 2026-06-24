@@ -4,7 +4,7 @@ from datetime import timedelta
 
 def compute_daily_activity(session, handle):
 
-    user = fetch_user_by_handle( "codeforces", handle )
+    user = fetch_user_by_handle( "codeforces", handle , session)
 
     rows = session.query(ProblemAttempt).filter(
         ProblemAttempt.user_id == user.id
@@ -60,7 +60,7 @@ def compute_daily_activity(session, handle):
             
 
 def compute_tag_performance(session,handle):
-    user = fetch_user_by_handle("codeforces", handle)
+    user = fetch_user_by_handle("codeforces", handle, session)
 
 
     rows = session.query(ProblemAttempt).filter(ProblemAttempt.user_id == user.id).all()
@@ -124,7 +124,8 @@ def compute_recommendation_queue(session,
 
     user = fetch_user_by_handle(
         "codeforces",
-        handle
+        handle,
+        session
     )
 
 
@@ -153,7 +154,8 @@ def compute_skill_estimate(session,handle):
 
     user = fetch_user_by_handle(
         "codeforces",
-        handle
+        handle,
+        session
     )
 
 
