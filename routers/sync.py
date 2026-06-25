@@ -29,19 +29,23 @@ def sync(user: UserBase, current_user: AppUsers = Depends(get_current_user)):
 
     if USE_CELERY:
         task = sync_user.delay(
-            user.handle, #fake handle
-            current_user.id, #app_user_id
+            user.handle,
+            current_user.id,
         )
-    else: #for production only
-        task = sync_user(
-            user.handle, #fake handle
-            current_user.id, #app_user_id
-        )
-        
+
+        return {
+            "task_id": task.id,
+            "status": "queued"
+        }
+
+    # No Celery
+    sync_user(
+        user.handle,
+        current_user.id,
+    )
 
     return {
-        "task_id": task.id,
-        "status": "queued"
+        "status": "completed"
     }
 
     # if existing_user:

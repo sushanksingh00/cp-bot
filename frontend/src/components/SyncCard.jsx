@@ -32,8 +32,14 @@ function SyncCard({handle}) {
                 }
             );
 
-            setTaskId(response.data.task_id);
             setStatus(response.data.status);
+
+            if (response.data.task_id) {
+                setTaskId(response.data.task_id);
+            } else {
+                setLoading(false);
+                navigate("/");
+            }
 
         } catch (error) {
 
