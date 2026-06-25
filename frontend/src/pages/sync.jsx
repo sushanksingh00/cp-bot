@@ -1,5 +1,7 @@
 import { useState } from "react";
 import SyncCard from "../components/SyncCard";
+import api from "../api/api";
+
 
 function Sync() {
     const [handle, setHandle] = useState("");

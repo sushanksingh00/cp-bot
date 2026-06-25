@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../api/api";
 
 function SyncCard({handle}) {
 
@@ -18,8 +19,8 @@ function SyncCard({handle}) {
 
             setLoading(true);
 
-            const response = await axios.post(
-                "http://localhost:8000/sync/codeforces",
+            const response = await api.post(
+                "/sync/codeforces",
                 {
                     handle: handle,
                     platform: "codeforces"
@@ -50,8 +51,8 @@ function SyncCard({handle}) {
 
             try {
 
-                const response = await axios.get(
-                    `http://localhost:8000/sync/status/${taskId}`
+                const response = await api.get(
+                    `/sync/status/${taskId}`
                 );
 
                 setStatus(response.data.state);

@@ -5,6 +5,8 @@ import Navbar from "../components/Sidebar";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
 import TagPerformanceGraph from "../components/TagPerfomanceChart";
+import api from "../api/api";
+
 
 function Tags() {
     const [data, setData] = useState(null);
@@ -15,8 +17,8 @@ function Tags() {
 
             try{
                 const token = localStorage.getItem("token");
-                const response = await axios.get(
-                    "http://localhost:8000/users/tags",
+                const response = await api.get(
+                    "/users/tags",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

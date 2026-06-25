@@ -4,6 +4,8 @@ import ContestsCard from "../components/ContestsCard";
 import ContestRatingChart from "../components/ContestRatingChart";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
+import api from "../api/api";
+
 
 
 function Contests() {
@@ -15,8 +17,8 @@ function Contests() {
             try{
             
                 const token = localStorage.getItem("token");
-                const response = await axios.get(
-                    "http://localhost:8000/users/contests",
+                const response = await api.get(
+                    "/users/contests",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

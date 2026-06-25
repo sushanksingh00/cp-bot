@@ -11,6 +11,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import ContestStatsCard from "../components/ContestStatCard";
 import TagPerformanceGraph from "../components/TagPerfomanceChart";
+import api from "../api/api";
+
 
 function Dashboard() {
 
@@ -23,8 +25,8 @@ function Dashboard() {
             try {
                 const token = localStorage.getItem("token");
 
-                const response = await axios.get(
-                    "http://localhost:8000/users/dashboard",
+                const response = await api.get(
+                    "/users/dashboard",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`

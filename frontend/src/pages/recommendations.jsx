@@ -5,6 +5,8 @@ import Navbar from "../components/Sidebar";
 import RecommendationsPageCard from "../components/RecommendationsPageCard";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
+import api from "../api/api";
+
 
 function Recommendations() {
     const [recommendations, setRecommendations] = useState([]);
@@ -18,16 +20,16 @@ function Recommendations() {
                 const token = localStorage.getItem("token");
 
                 const [recommendationsRes, upsolvesRes] = await Promise.all([
-                    axios.get(
-                        "http://localhost:8000/users/recommendations",
+                    api.get(
+                        "/users/recommendations",
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
                         }
                     ),
-                    axios.get(
-                        "http://localhost:8000/users/upsolve",
+                    api.get(
+                        "/users/upsolve",
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,

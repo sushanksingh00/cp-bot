@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import api from "../api/api";
+
 
 function Login() {
 
@@ -13,8 +15,8 @@ function Login() {
 
         try {
 
-            const response = await axios.post(
-                "http://localhost:8000/auth/login",
+            const response = await api.post(
+                "/auth/login",
                 {
                     username,
                     password

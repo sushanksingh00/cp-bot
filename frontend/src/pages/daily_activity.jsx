@@ -4,6 +4,8 @@ import DailyActivityCard from "../components/DailyActivityCard";
 import Navbar from "../components/Sidebar";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
+import api from "../api/api";
+
 
 function DailyActivity() {
     const [data, setData] = useState(null);
@@ -14,8 +16,8 @@ function DailyActivity() {
 
             try{
                 const token = localStorage.getItem("token");
-                const response = await axios.get(
-                    "http://localhost:8000/users/daily-activity",
+                const response = await api.get(
+                    "/users/daily-activity",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

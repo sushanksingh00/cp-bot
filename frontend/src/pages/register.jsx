@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import api from "../api/api";
+
 
 
 function Register() {
@@ -15,8 +17,8 @@ function Register() {
     
     const handleRegister = async () => {
         try{
-            const response = await axios.post(
-                "http://localhost:8000/auth/register", 
+            const response = await api.post(
+                "/auth/register", 
                 {
                     username, 
                     email,
