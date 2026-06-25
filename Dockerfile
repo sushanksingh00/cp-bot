@@ -8,7 +8,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+COPY entrypoint.sh .
+
+RUN chmod +x entrypoint.sh
+
+CMD ["./entrypoint.sh"]
+
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 #copy and run will be executed only in build time
 #cmd will be executed in the run time only
