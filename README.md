@@ -12,6 +12,31 @@ A full-stack analytics platform that syncs Codeforces profiles, computes competi
 
 ---
 
+## Live Demo
+
+🌐 **Frontend:** https://cp-bot-main.onrender.com
+
+📚 **Backend API:** https://cp-bot-1.onrender.com/docs
+
+> **Note:** The live demo runs without a Celery worker due to Render's free-tier limitations. Background synchronization executes synchronously in production while retaining the complete Celery architecture for local development.
+
+---
+
+## Project Highlights
+
+* JWT Authentication & Protected Routes
+* Codeforces Profile & Contest Synchronization
+* Analytics Engine for Performance Tracking
+* Personalized Recommendation System
+* Redis-based Dashboard Caching
+* Celery Background Task Architecture
+* Automated Testing with Pytest
+* GitHub Actions Continuous Integration
+* Dockerized Multi-Service Development Environment
+* Production Deployment on Render
+
+---
+
 ## Features
 
 ### Authentication
@@ -25,7 +50,7 @@ A full-stack analytics platform that syncs Codeforces profiles, computes competi
 - Codeforces Profile Sync
 - Contest History Import
 - Submission History Import
-- Background Processing using Celery
+- Background Processing using Celery (with synchronous fallback for production deployment)
 
 ### Analytics
 
@@ -44,10 +69,15 @@ A full-stack analytics platform that syncs Codeforces profiles, computes competi
 
 ### Infrastructure
 
-- PostgreSQL
-- Redis Caching
-- Celery Workers
-- Dockerized Setup
+* Docker
+* Docker Compose
+* PostgreSQL
+* Redis Caching
+* Celery Background Tasks
+* GitHub Actions CI
+* Structured Logging
+* Health Check Endpoints
+* Production Deployment (Render)
 
 ---
 
@@ -82,18 +112,25 @@ A full-stack analytics platform that syncs Codeforces profiles, computes competi
 ## System Architecture
 
 ```text
-React Frontend
-        │
-        ▼
-FastAPI Backend
-        │
- ┌──────┼──────┐
- ▼      ▼      ▼
-Postgres Redis Celery
-        │
-        ▼
-Codeforces API
+                    React Frontend
+                    (Vite + Tailwind)
+                           │
+                           ▼
+                  FastAPI Backend
+                           │
+          ┌────────────────┼────────────────┐
+          │                │                │
+          ▼                ▼                ▼
+     PostgreSQL        Redis Cache     Celery Worker*
+          │
+          ▼
+     Codeforces API
+
+*The production deployment executes synchronization
+synchronously because the Render free tier does not
+support background workers.
 ```
+
 
 ---
 
@@ -119,8 +156,10 @@ Codeforces API
 
 ### Infrastructure
 
-- Docker
-- Docker Compose
+* Docker
+* Docker Compose
+* GitHub Actions
+* Render
 
 ---
 
@@ -236,30 +275,78 @@ POSTGRES_PASSWORD=
 POSTGRES_DB=
 
 DB_URL=
+DB_URL_TEST=
 
 SECRET_KEY=
 ALGORITHM=HS256
 
 REDIS_HOST=redis
 REDIS_URL=redis://redis:6379/0
+
+USE_CELERY=true
+USE_REDIS=true
+RUN_MIGRATIONS=false
+
+VITE_API_URL=http://localhost:8000
 ```
+
 
 ---
 
-## Local Setup
+## Testing
 
-### Clone Repository
+Implemented using **Pytest** with a dedicated testing database.
+
+### Authentication
+
+* Register
+* Login
+* Invalid Credentials
+* Protected Routes
+
+### Analytics
+
+* Dashboard
+* Daily Activity
+* Tag Analytics
+* Contest Analytics
+* Recommendations
+
+### Test Infrastructure
+
+* Pytest Fixtures
+* FastAPI Dependency Overrides
+* Separate Test Database
+* GitHub Actions CI Pipeline
+
+---
+## Quick Start (Recommended)
+
+Run the complete application using Docker Compose.
 
 ```bash
-git clone https://github.com/sushanksingh00/cp-analytics-platform.git
-cd cp-analytics-platform
+docker compose up --build
 ```
+
+This starts:
+
+* FastAPI Backend
+* PostgreSQL
+* Redis
+* Celery Worker
+* React Frontend
+
+---
+
+## Manual Setup
 
 ### Backend
 
 ```bash
 pip install -r requirements.txt
+
 alembic upgrade head
+
 uvicorn main:app --reload
 ```
 
@@ -273,52 +360,54 @@ celery -A tasks.task worker --loglevel=info
 
 ```bash
 cd frontend
+
 npm install
+
 npm run dev
 ```
 
----
-
-## Docker Setup
-
-```bash
-docker compose up --build
-```
-
-Services started:
-
-- FastAPI
-- PostgreSQL
-- Redis
-- Celery Worker
-- React Frontend
 
 ---
 
 ## Future Improvements
 
-- AI Insights
-- Weekly Performance Reports
-- Personalized Study Plans
-- GitHub Actions CI/CD
-- Test Coverage
-- Monitoring & Logging
-- Public Deployment
+* AI-powered Performance Insights
+* Weekly Performance Reports
+* Personalized Study Plans
+* Multi-Platform Support (LeetCode, CodeChef, AtCoder)
+* Real-time Notifications
+* WebSocket-based Live Updates
+* Monitoring & Metrics Dashboard
+* OpenTelemetry Integration
 
 ---
 
 ## Learning Outcomes
 
-This project helped me gain hands-on experience with:
+This project provided hands-on experience with:
 
-- Backend Engineering
-- Database Design
-- Authentication Systems
-- Analytics Pipelines
-- Background Processing
-- Redis Caching
-- Docker & Containerization
-- Full Stack Development
+* Backend Engineering
+* Full Stack Development
+* REST API Design
+* Authentication & Authorization
+* Database Design
+* SQLAlchemy ORM
+* Database Migrations with Alembic
+* Analytics Pipeline Design
+* Recommendation Systems
+* Redis Caching
+* Background Processing with Celery
+* Docker & Docker Compose
+* Automated Testing with Pytest
+* GitHub Actions CI
+* Production Deployment
+* Logging & Health Monitoring
+
+---
+
+## License
+
+This project is licensed under the MIT License.
 
 ---
 
