@@ -14,3 +14,6 @@ ALGORITHM = os.getenv("ALGORITHM")
 
 REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_URL = os.getenv("REDIS_URL")
+
+USE_CELERY  = os.getenv("USE_CELERY")
+USE_REDIS  = os.getenv("USE_REDIS")

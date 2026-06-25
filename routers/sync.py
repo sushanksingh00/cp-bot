@@ -16,6 +16,8 @@ from core.celery_app import celery_app
 from sqlalchemy.orm import Session
 from database import get_db
 
+from config import USE_CELERY
+
 router = APIRouter(
     prefix="/sync",
     tags=["Sync"]
@@ -25,10 +27,17 @@ router = APIRouter(
 def sync(user: UserBase, current_user: AppUsers = Depends(get_current_user)):
 
 
-    task = sync_user.delay(
-        user.handle, #fake handle
-        current_user.id, #app_user_id
-    )
+    if USE_CELERY:
+        task = sync_user.delay(
+            user.handle, #fake handle
+            current_user.id, #app_user_id
+        )
+    else: #for production only
+        task = sync_user(
+            user.handle, #fake handle
+            current_user.id, #app_user_id
+        )
+        
 
     return {
         "task_id": task.id,

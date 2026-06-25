@@ -13,6 +13,8 @@ from database import get_db
 
 from core.logger import logger
 
+from config import USE_REDIS
+
 router = APIRouter(
     prefix="/users",
     tags=["Users"] # for swagger ui
@@ -41,14 +43,15 @@ def dashboard(current_user : AppUsers = Depends(get_current_user), session: Sess
 
     cache_key = f"dashboard:{user.id}"
 
-    cache_dashboard = redis_client.get(cache_key)
+    if USE_REDIS:
+        cache_dashboard = redis_client.get(cache_key)
 
-    if cache_dashboard:
-        logger.info("CACHE HIT")
-        logger.info(cache_key)
+        if cache_dashboard:
+            logger.info("CACHE HIT")
+            logger.info(cache_key)
 
 
-        return json.loads(cache_dashboard)
+            return json.loads(cache_dashboard)
 
     # try:
     #     cf_data = fetch_cf_userdata(handle)[0]
@@ -179,16 +182,17 @@ def dashboard(current_user : AppUsers = Depends(get_current_user), session: Sess
         "total_contests": total_contests,
         "total_questions": total_questions,
         "total_days_active": total_days_active,
-    }   
-
-    redis_client.setex(
-        cache_key,
-        300,
-        json.dumps(
-            dashboard_data,
-            default=str
+    }  
+    
+    if USE_REDIS: 
+        redis_client.setex(
+            cache_key,
+            300,
+            json.dumps(
+                dashboard_data,
+                default=str
+            )
         )
-    )
     return dashboard_data
 
 

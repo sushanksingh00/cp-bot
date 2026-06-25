@@ -10,6 +10,8 @@ from database import sessionLocal
 
 from core.logger import logger
 
+from config import USE_REDIS
+
 
 @celery_app.task
 def long_task():
@@ -75,9 +77,10 @@ def sync_user(handle_, app_user_id):
 
     logger.info(f"dashboard:{db_user.id}")
 
-    redis_client.delete(
-        f"dashboard:{db_user.id}"
-    )
+    if USE_REDIS:
+        redis_client.delete(
+            f"dashboard:{db_user.id}"
+        )
 
     return {
         "message": "sync completed",
