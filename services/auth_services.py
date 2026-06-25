@@ -8,6 +8,8 @@ from database import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
 
+from core.logger import logger
+
 
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
@@ -25,12 +27,14 @@ def register_user(username, password, email, session
         AppUsers.username == username
     ))
     if username_user:
+        logger.exception("username is taken")
         raise HTTPException(401, detail="User already registered !")
     
     email_user = session.scalar(select(AppUsers).where(
         AppUsers.email == email
     ))
     if email_user:
+        logger.exception("Email is already registered")
         raise HTTPException(401, detail="Email Already Registered !")
     
 
@@ -58,13 +62,16 @@ def login_user(username, password, session):
         AppUsers.username == username
     ))
     if not username_user:
+        logger.exception("Username not found")
         raise HTTPException(401, detail="Username not Found !")
     
     if not verify_password(password, username_user.password):
+        logger.exception("Wrong password entered")
         raise HTTPException(401, detail="Wrong Password Entered !")
     
     exp_time = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    print("exp time is", exp_time)
+    logger.info("exp time is %s", exp_time)
+
 
     token = jwt.encode({"id": username_user.id, "exp":exp_time}, SECRET_KEY, algorithm=ALGORITHM)
     
@@ -74,6 +81,7 @@ def login_user(username, password, session):
 def get_current_user(request: Request, session: Session = Depends(get_db)): #is_auth
     token = request.headers.get("authorization")
     if not token:
+        logger.exception("Token is unavailable")
         raise HTTPException(401, detail="Unautharized, token not available")
     
     token = token.split(" ")[-1]
@@ -81,6 +89,7 @@ def get_current_user(request: Request, session: Session = Depends(get_db)): #is_
     try:
         data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except Exception as e:
+        logger.exception("not a valid jwt token")
         raise HTTPException(401,detail=f"Unautharized, it is not a jwt token {e}")
     
     user_id = data["id"]
@@ -90,13 +99,14 @@ def get_current_user(request: Request, session: Session = Depends(get_db)): #is_
     )
     remaining = exp_time - datetime.now(timezone.utc)
 
-    print("remaing time is", remaining)    
+    logger.info("remaing time is %s", remaining)    
 
 
     user_data = session.scalar(select(AppUsers).where(
         AppUsers.id == user_id
     ))
     if not user_data:
+        logger.exception("user details did not match")
         raise HTTPException(401, detail="Unautharized, User details did not match")
     
     return user_data

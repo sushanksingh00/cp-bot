@@ -8,12 +8,14 @@ from services.sync_services import *
 from core.redis_client import redis_client
 from database import sessionLocal
 
+from core.logger import logger
+
 
 @celery_app.task
 def long_task():
-    print("started")
+    logger.info("started")
     time.sleep(2)
-    print("finished")
+    logger.info("finished")
     return "done"
 
 
@@ -22,12 +24,12 @@ def sync_user(handle_, app_user_id):
 
     with sessionLocal() as session:
 
-        print("TEST DB:", session.bind.url)
+        logger.debug("TEST DB:", session.bind.url)
 
         cf_data = fetch_cf_userdata(handle_)[0]
         handle = cf_data["handle"]
 
-        print(handle)
+        logger.debug(handle)
 
         existing_user = fetch_user_by_handle(
             "codeforces",
@@ -71,7 +73,7 @@ def sync_user(handle_, app_user_id):
             session
         )
 
-    print(f"dashboard:{db_user.id}")
+    logger.info(f"dashboard:{db_user.id}")
 
     redis_client.delete(
         f"dashboard:{db_user.id}"

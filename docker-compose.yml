@@ -11,42 +11,42 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
 
-  # api:
-  #   build: .
-  #   ports:
-  #     - "8000:8000"
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - .:/app
-  #   depends_on:
-  #     - redis
-  #     - postgres
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - postgres
 
   redis:
     image: redis:latest
 
     #this is for local run only remove this when running on docker only
+    # ports:
+    #   - "6379:6379"
+
+  worker:
+    build: .
+    command: celery -A core.celery_app worker --loglevel=info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+
+  frontend:
+    build: ./frontend
     ports:
-      - "6379:6379"
-
-  # worker:
-  #   build: .
-  #   command: celery -A core.celery_app worker --loglevel=info
-  #   volumes:
-  #     - .:/app
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - redis
-  #     - postgres
-
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - "5173:5173"
-  #   depends_on:
-  #     - api
+      - "5173:5173"
+    depends_on:
+      - api
     
 volumes:
   postgres_data:

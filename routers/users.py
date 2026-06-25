@@ -11,6 +11,8 @@ from schemas import ProfileResponse
 from sqlalchemy.orm import Session
 from database import get_db
 
+from core.logger import logger
+
 router = APIRouter(
     prefix="/users",
     tags=["Users"] # for swagger ui
@@ -42,8 +44,10 @@ def dashboard(current_user : AppUsers = Depends(get_current_user), session: Sess
     cache_dashboard = redis_client.get(cache_key)
 
     if cache_dashboard:
-        print("CACHE HIT")
-        print(cache_key)
+        logger.info("CACHE HIT")
+        logger.info(cache_key)
+
+
         return json.loads(cache_dashboard)
 
     # try:

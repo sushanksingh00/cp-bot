@@ -3,12 +3,15 @@ from externalapi import *
 from fastapi import FastAPI, HTTPException
 from datetime import UTC
 
+from core.logger import logger
+
 def sync_user_contests(session, handle):
     try :
         cf_contest_data = fetch_cf_contest_history(handle) # a list of dict of contests
         cf_submission_data = fetch_cf_submission_history(handle) # a list of dict of submissions for each prob
 
     except Exception:
+        logger.exception("User not found or codeforces API failed")
         raise HTTPException(status_code=404, detail="User not Found or Codeforces API failed")
     
     for contest in cf_contest_data:
@@ -50,6 +53,7 @@ def compute_problem_attempt(session, handle):
         cf_submission_data = fetch_cf_submission_history(handle)
         problem_set = fetch_cf_problems()
     except Exception:
+        logger.exception("Either CF API is not Working or Username not found")
         raise HTTPException(status_code=404, detail="Either CF API is not Working or Username not found")
 
     db_user = fetch_user_by_handle("codeforces", handle, session)
