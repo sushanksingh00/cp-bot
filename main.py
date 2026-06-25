@@ -13,7 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173" #frontend ka origin
+        "http://localhost:5173", #frontend ka origin
+        "https://cp-bot-main.onrender.com/"
     ],
     allow_credentials=True,
     allow_methods=["*"],
