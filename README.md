@@ -10,6 +10,18 @@
 
 A full-stack analytics platform that syncs Codeforces profiles, computes competitive programming insights, tracks progress, identifies weaknesses, and generates personalized recommendations.
 
+---
+
+## 🚀 Quick Preview
+
+<p align="center">
+  <img src="images/app_gif.gif" alt="CP Analytics Demo GIF" width="500">
+</p>
+
+<p align="center">
+  <i>A quick walkthrough of CP Analytics showcasing authentication, Codeforces sync, analytics dashboard, contest insights, daily activity, tag analysis, and personalized recommendations.</i>
+</p>
+
 
 ---
 
