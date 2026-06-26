@@ -113,9 +113,18 @@ def generate_upsolve_recommendations(session,user_id):
 
     for key, data in problems.items():
 
-        if data["solved"]: continue
+
 
         contest_id, index = key
+
+        if data["solved"]:
+            complete_upsolve_recommendation(
+                session,
+                user_id=user_id,
+                contest_id=contest_id,
+                problem_index=index
+            )
+            continue
 
         update_recommendation_queue(session,
             user_id=user_id,

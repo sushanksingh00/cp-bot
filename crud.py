@@ -399,3 +399,24 @@ def update_skill_estimate(session,
 
     session.commit()
     session.refresh(row)
+
+
+def complete_upsolve_recommendation(
+    session,
+    user_id,
+    contest_id,
+    problem_index,
+):
+    recommendation = session.scalar(
+        select(RecommendationQueue).where(
+            RecommendationQueue.user_id == user_id,
+            RecommendationQueue.recommendation_type == "upsolve",
+            RecommendationQueue.problem_contest_id == contest_id,
+            RecommendationQueue.problem_index == problem_index,
+            RecommendationQueue.is_completed == False
+        )
+    )
+
+    if recommendation:
+        recommendation.is_completed = True
+        session.commit()

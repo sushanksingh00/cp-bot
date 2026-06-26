@@ -121,9 +121,17 @@ def dashboard(current_user : AppUsers = Depends(get_current_user), session: Sess
             upsolve_count += 1
             continue
 
+        title = rec.recommendation_type.replace("_", " ").title()
+        reason = rec.reason
+
+        if title == "Consistency Boost":
+            days_inac = reason.split(" ")[-2]
+            if(days_inac <= '1'):
+                continue
+
         recommendation_data.append({
-            "title": rec.recommendation_type.replace("_", " ").title(),
-            "message": rec.reason
+            "title": title,
+            "message": reason
         })
 
     if upsolve_count:
@@ -183,7 +191,7 @@ def dashboard(current_user : AppUsers = Depends(get_current_user), session: Sess
         "total_questions": total_questions,
         "total_days_active": total_days_active,
     }  
-    
+
     if USE_REDIS: 
         redis_client.setex(
             cache_key,

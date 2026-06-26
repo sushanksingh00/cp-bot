@@ -1,69 +1,152 @@
-import axios from "axios";
 import { useState } from "react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/api";
 
-
-
 function Register() {
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const [error, setError] = useState("");
+
     const navigate = useNavigate();
 
-    
+
+    const hasLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+
+    const validPassword =
+        hasLength &&
+        hasUpper &&
+        hasLower &&
+        hasNumber;
+
     const handleRegister = async () => {
-        try{
-            const response = await api.post(
-                "/auth/register", 
-                {
-                    username, 
-                    email,
-                    password
-                }
-            );
+        setError("");
+
+        try {
+            const response = await api.post("/auth/register", {
+                username,
+                email,
+                password,
+            });
+
             localStorage.setItem(
                 "token",
                 response.data.token
             );
-            console.log("Registered");
-            navigate('/login')
 
-        }catch(error){
-            if (error.response?.status === 401) {
-                alert("User already exists");
-            }
+            navigate("/login");
+        } catch (error) {
+            setError(
+                error.response?.data?.detail ||
+                "Registration failed."
+            );
+
             console.log(error);
         }
-    }
+    };
 
-    return(
-        <div className="min-h-screen flex items-center justify-center bg-white">
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-white px-4">
             <div className="w-full max-w-md bg-blue-100 rounded-2xl shadow-xl p-8">
-                <h1 className="text-4xl flex justify-center items-start mb-2 font-bold">Register</h1>
-                <h1 className="mb-15 text-gray-500 text-center">Enter your username, email, and password to create your account</h1>
+
+                <h1 className="text-4xl font-bold text-center mb-2">
+                    Register
+                </h1>
+
+                <p className="text-gray-500 text-center mb-8">
+                    Create your account to start tracking your
+                    competitive programming journey.
+                </p>
 
                 <div className="flex flex-col gap-4">
-                    <input placeholder="Username" value={username} type="text" onChange={(e) => setUsername(e.target.value)}
-                    className="p-3 rounded-2xl shadow-lg bg-white"></input>
 
-                    <input placeholder="Email" value={email} type="email" onChange={(e) => setEmail(e.target.value)}
-                    className="p-3 rounded-2xl shadow-lg bg-white"></input>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="p-3 rounded-2xl shadow-lg bg-white outline-none focus:ring-2 focus:ring-blue-500"
+                    />
 
-                    <input placeholder="Password" value={password} type="password" onChange={(e) => setPassword(e.target.value)}
-                    className="p-3 rounded-2xl shadow-lg bg-white"></input>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="p-3 rounded-2xl shadow-lg bg-white outline-none focus:ring-2 focus:ring-blue-500"
+                    />
 
-                    <button onClick={handleRegister}
-                    className="px-6 py-3 bg-blue-500 font-semibold text-white rounded-2xl shadow-lg hover:bg-blue-700">Register</button>
-                    <Link to="/login">Login?</Link>
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="p-3 rounded-2xl shadow-lg bg-white outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    {/* Password Requirements */}
+
+                    <div className="bg-white rounded-xl p-4 text-sm shadow">
+
+                        <p className="font-semibold mb-2 text-gray-700">
+                            Password Requirements
+                        </p>
+
+                        <p className={hasLength ? "text-green-600" : "text-gray-500"}>
+                            {hasLength ? "✓" : "○"} At least 8 characters
+                        </p>
+
+                        <p className={hasUpper ? "text-green-600" : "text-gray-500"}>
+                            {hasUpper ? "✓" : "○"} One uppercase letter
+                        </p>
+
+                        <p className={hasLower ? "text-green-600" : "text-gray-500"}>
+                            {hasLower ? "✓" : "○"} One lowercase letter
+                        </p>
+
+                        <p className={hasNumber ? "text-green-600" : "text-gray-500"}>
+                            {hasNumber ? "✓" : "○"} One number
+                        </p>
+
+                    </div>
+
+                    {error && (
+                        <div className="bg-red-100 border border-red-300 rounded-lg p-3">
+                            <p className="text-red-600 text-sm text-center">
+                                {error}
+                            </p>
+                        </div>
+                    )}
+
+                    <button
+                        onClick={handleRegister}
+                        disabled={!validPassword}
+                        className={`px-6 py-3 rounded-2xl shadow-lg font-semibold text-white transition ${
+                            validPassword
+                                ? "bg-blue-500 hover:bg-blue-700"
+                                : "bg-gray-400 cursor-not-allowed"
+                        }`}
+                    >
+                        Register
+                    </button>
+
+                    <p className="text-center text-gray-600">
+                        Already have an account?{" "}
+                        <Link
+                            to="/login"
+                            className="text-blue-600 font-semibold hover:underline"
+                        >
+                            Login
+                        </Link>
+                    </p>
+
                 </div>
             </div>
-
         </div>
-    )
+    );
 }
 
 export default Register;

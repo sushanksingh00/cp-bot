@@ -4,7 +4,7 @@ const UserCard = ({ user , last_active}) => {
     
     return (
         <div className="h-full bg-blue-100 rounded-2xl shadow-md p-6 flex flex-col justify-center">
-            <div className="justify-between items-start flex">
+            <div className="flex flex-col lg:flex-row justify-between gap-6">
                 <div>
                     <h2 className="text-4xl font-bold mb-5">
                         {user.handle}
@@ -18,9 +18,9 @@ const UserCard = ({ user , last_active}) => {
                         Last Active: {last_active}
                     </p>
                 </div>
-               <div className="flex gap-4">
+               <div className="flex flex-col sm:flex-row gap-4">
 
-                    <div className="bg-white rounded-xl p-4 text-center min-w-28 shadow">
+                    <div className="bg-white rounded-xl p-4 text-center w-full sm:w-32 shadow">
                         <p className="text-sm text-gray-500">
                             Current
                         </p>
@@ -30,7 +30,7 @@ const UserCard = ({ user , last_active}) => {
                         </p>
                     </div>
 
-                    <div className="bg-white rounded-xl p-4 text-center min-w-28 shadow">
+                    <div className="bg-white rounded-xl p-4 text-center w-full sm:w-32 shadow">
                         <p className="text-sm text-gray-500">
                             Max
                         </p>

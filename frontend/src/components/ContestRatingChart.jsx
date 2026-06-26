@@ -19,7 +19,7 @@ const ContestRatingChart = ({ contests = [] }) => {
 
 
     return (
-        <div className='p-6 rounded-2xl bg-blue-100  p-6 mb-4'>
+        <div className='p-6 rounded-2xl  p-6 mb-4'>
             <ResponsiveContainer width="100%" height={350}>
                 <AreaChart data={contestData}>
                     {/* <CartesianGrid strokeDasharray="3 3" stroke="black"/> */}

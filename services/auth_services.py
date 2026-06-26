@@ -11,7 +11,7 @@ from fastapi import Depends
 from core.logger import logger
 
 
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+ACCESS_TOKEN_EXPIRE_MINUTES=120
 
 password_hash = PasswordHash.recommended()
 def get_hash_password(password):
@@ -20,29 +20,55 @@ def verify_password(plain_password, hashed_password):
     return password_hash.verify(plain_password, hashed_password)
 
 
-def register_user(username, password, email, session
-):
+import re
 
-    username_user = session.scalar(select(AppUsers).where(
-        AppUsers.username == username
-    ))
+def register_user(username, password, email, session):
+
+    username_user = session.scalar(
+        select(AppUsers).where(AppUsers.username == username)
+    )
+
     if username_user:
-        logger.exception("username is taken")
-        raise HTTPException(401, detail="User already registered !")
-    
-    email_user = session.scalar(select(AppUsers).where(
-        AppUsers.email == email
-    ))
-    if email_user:
-        logger.exception("Email is already registered")
-        raise HTTPException(401, detail="Email Already Registered !")
-    
+        logger.warning("Username is already taken")
+        raise HTTPException(401, detail="Username already registered!")
 
+    email_user = session.scalar(
+        select(AppUsers).where(AppUsers.email == email)
+    )
+
+    if email_user:
+        logger.warning("Email is already registered")
+        raise HTTPException(401, detail="Email already registered!")
+
+    # Password Validation
+    if len(password) < 8:
+        raise HTTPException(
+            status_code=400,
+            detail="Password must be at least 8 characters long."
+        )
+
+    if not re.search(r"[A-Z]", password):
+        raise HTTPException(
+            status_code=400,
+            detail="Password must contain at least one uppercase letter."
+        )
+
+    if not re.search(r"[a-z]", password):
+        raise HTTPException(
+            status_code=400,
+            detail="Password must contain at least one lowercase letter."
+        )
+
+    if not re.search(r"\d", password):
+        raise HTTPException(
+            status_code=400,
+            detail="Password must contain at least one digit."
+        )
 
     new_user = AppUsers(
-        username = username,
-        password = get_hash_password(password),
-        email = email
+        username=username,
+        password=get_hash_password(password),
+        email=email,
     )
 
     session.add(new_user)
@@ -52,9 +78,8 @@ def register_user(username, password, email, session
     return {
         "id": new_user.id,
         "username": new_user.username,
-        "email": new_user.email
+        "email": new_user.email,
     }
-        
 
 def login_user(username, password, session):
 

@@ -239,6 +239,8 @@ class TagsResponse(BaseModel):
 class UpsolveResponse(BaseModel):
     problem_contest_id: int
     problem_index: str
+    is_completed: bool
+
 class RecommendationResponse(BaseModel):
     recommendation_type: str
     reason: str

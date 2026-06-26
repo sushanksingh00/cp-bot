@@ -10,6 +10,8 @@ from schemas import RecommendationResponse, UpsolveResponse
 from sqlalchemy.orm import Session
 from database import get_db
 
+from core.logger import logger
+
 router = APIRouter(
     prefix="/users",
     tags=["Recommendations"] # for swagger ui
@@ -48,16 +50,21 @@ def upsolve(current_user : AppUsers = Depends(get_current_user), session: Sessio
 
     user = get_linked_cf_user(current_user.id, session)
 
-
-    upsolve_rows = session.scalars(select(RecommendationQueue).where(
-        RecommendationQueue.user_id == user.id,
-        RecommendationQueue.recommendation_type == "upsolve"
-    )).all()
+    upsolve_rows = session.scalars(
+        select(RecommendationQueue).where(
+            RecommendationQueue.user_id == user.id,
+            RecommendationQueue.recommendation_type == "upsolve",
+            RecommendationQueue.is_dismissed == False
+        )
+    ).all()
 
     upsolve_data = []
+
     for row in upsolve_rows:
         upsolve_data.append({
-            "problem_contest_id" : row.problem_contest_id,
-            "problem_index" : row.problem_index,
+            "problem_contest_id": row.problem_contest_id,
+            "problem_index": row.problem_index,
+            "is_completed": row.is_completed,
         })
+    logger.info(upsolve_data)
     return upsolve_data
