@@ -37,7 +37,7 @@ def user_data():
     return {
         "username" : f"user_{unique_id}",
         "email" : f"test_{unique_id}@test.com",
-        "password" : "12345678"
+        "password" : "Cpanalytics123"
     }
 
 @pytest.fixture
@@ -58,7 +58,7 @@ def registered_user(db, client, user_data):
 def header_token(client, registered_user):
     response = client.post("/auth/login", json={
         "username" : registered_user.username,
-        "password" : "12345678"
+        "password" : "Cpanalytics123"
     })
 
     token = response.json()["token"]
