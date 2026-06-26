@@ -13,11 +13,11 @@ A full-stack analytics platform that syncs Codeforces profiles, computes competi
 
 ---
 
-# 🎥 Project Demo
+## 🎥 Project Demo
 
 <p align="center">
   <a href="https://youtu.be/SYv24VIP74I">
-    <img src="images/thumbnail.png" alt="CP Analytics Demo" width="800">
+    <img src="images/thumbnail.png" alt="CP Analytics Demo" width="500">
   </a>
 </p>
 
