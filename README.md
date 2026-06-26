@@ -364,10 +364,21 @@ This starts:
 * React Frontend
 
 ---
-
 ## Manual Setup
 
-### Backend
+The order should be strictly followed
+
+### 1. Start PostgreSQL
+
+Ensure PostgreSQL is running and your database is created.
+
+### 2. Start Redis
+
+```bash
+redis-server
+```
+
+### 3. Backend
 
 ```bash
 pip install -r requirements.txt
@@ -377,13 +388,13 @@ alembic upgrade head
 uvicorn main:app --reload
 ```
 
-### Celery Worker
+### 4. Celery Worker
 
 ```bash
 celery -A tasks.task worker --loglevel=info
 ```
 
-### Frontend
+### 5. Frontend
 
 ```bash
 cd frontend
@@ -392,7 +403,6 @@ npm install
 
 npm run dev
 ```
-
 
 ---
 
@@ -442,7 +452,7 @@ This project is licensed under the MIT License.
 
 ### Sushank Singh
 
-B.Tech CSE (Software Engineering)
+B.Tech CSE
 VIT-AP University
 
 GitHub: https://github.com/sushanksingh00
