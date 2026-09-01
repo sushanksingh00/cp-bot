@@ -722,6 +722,9 @@ def get_inference_features(
         else 1500
     )
 
+    if problem_rating is None:
+        problem_rating = 1500
+
     rating_difference = (
         avg_solved_rating -
         problem_rating
@@ -799,7 +802,7 @@ def get_inference_features(
     # Return exactly the feature set used by training
     # ---------------------------------------------------------
 
-    return {
+    features = {
 
         "problem_rating": problem_rating,
 
@@ -885,6 +888,13 @@ def get_inference_features(
             else 1.0
         )
     }
+
+    # Final validation to match training's fillna(0) and replace(inf, nan)
+    for k, v in features.items():
+        if v is None or pd.isna(v) or np.isinf(v):
+            features[k] = 0.0
+
+    return features
 
 
 if __name__ == "__main__":
