@@ -97,7 +97,19 @@ def fetch_cf_contest_history(handle: str):
         })
     return contests
 
+import time
+
+_cf_problems_cache = None
+_cf_problems_cache_time = 0
+
 def fetch_cf_problems():
+    global _cf_problems_cache, _cf_problems_cache_time
+    
+    # Cache for 1 hour (3600 seconds)
+    current_time = time.time()
+    if _cf_problems_cache is not None and (current_time - _cf_problems_cache_time) < 3600:
+        return _cf_problems_cache
+        
     url = (
         f"https://codeforces.com/api/problemset.problems"
     )
@@ -120,6 +132,9 @@ def fetch_cf_problems():
             "rating": problem.get("rating"),
         })
 
+    _cf_problems_cache = problem_set
+    _cf_problems_cache_time = current_time
+    
     return problem_set
 #------------------------------------------------------------------
 #--------------------LEETCODE--------------------------------------

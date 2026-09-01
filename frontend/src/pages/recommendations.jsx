@@ -8,6 +8,7 @@ import api from "../api/api";
 
 function Recommendations() {
     const [recommendations, setRecommendations] = useState([]);
+    const [mlRecommendations, setMlRecommendations] = useState([]);
     const [activeUpsolves, setActiveUpsolves] = useState([]);
     const [completedUpsolves, setCompletedUpsolves] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -22,7 +23,7 @@ function Recommendations() {
 
                 const token = localStorage.getItem("token");
 
-                const [recommendationsRes, upsolvesRes] = await Promise.all([
+                const [recommendationsRes, upsolvesRes, mlRes] = await Promise.all([
                     api.get("/users/recommendations", {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -33,9 +34,15 @@ function Recommendations() {
                             Authorization: `Bearer ${token}`,
                         },
                     }),
+                    api.get("/users/personalized", {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }),
                 ]);
 
                 setRecommendations(recommendationsRes.data);
+                setMlRecommendations(mlRes.data);
 
                 setActiveUpsolves(
                     upsolvesRes.data.filter(
@@ -88,7 +95,7 @@ function Recommendations() {
                     </h1>
 
                     <p className="text-gray-500 mt-2">
-                        Receive personalized recommendations, identify weak
+                        Receive personalized ML recommendations, identify weak
                         topics, review suggested upsolves, and track problems
                         you've successfully solved after contests.
                     </p>
@@ -97,6 +104,7 @@ function Recommendations() {
 
                 <RecommendationsPageCard
                     recommendations={recommendations}
+                    mlRecommendations={mlRecommendations}
                     upsolves={activeUpsolves}
                     completedUpsolves={completedUpsolves}
                 />

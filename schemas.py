@@ -244,3 +244,57 @@ class UpsolveResponse(BaseModel):
 class RecommendationResponse(BaseModel):
     recommendation_type: str
     reason: str
+
+class MLRecommendationResponse(BaseModel):
+    problem_id: str
+    rating: int | None
+    tags: List[str]
+    solve_probability: float
+    difficulty_band: str
+    reason: str
+
+class ProblemInfoSchema(BaseModel):
+    problem_id: str
+    name: str | None
+    rating: int | None
+    tags: List[str]
+    url: str
+
+class PredictionInfoSchema(BaseModel):
+    solve_probability: float
+    difficulty_band: str
+
+class RecommendationInfoSchema(BaseModel):
+    score: float
+    targeted_weak_tags: List[str]
+    reason: str
+
+class UserPerformanceSchema(BaseModel):
+    overall_solve_rate: float
+    recent_7d_solve_rate: float
+    recent_30d_solve_rate: float
+    total_attempts: int
+    total_solved: int
+
+class TopicAnalysisSchema(BaseModel):
+    tag: str
+    attempts: int
+    solved: int
+    solve_rate: float
+    status: str
+
+class ModelSignalsSchema(BaseModel):
+    difficulty_relative_to_user: float
+    historical_performance: float
+    recent_performance: float
+    topic_performance: float
+    topic_familiarity: float
+
+class MLInsightResponse(BaseModel):
+    problem: ProblemInfoSchema
+    prediction: PredictionInfoSchema
+    recommendation: RecommendationInfoSchema
+    user_performance: UserPerformanceSchema
+    topic_analysis: List[TopicAnalysisSchema]
+    model_signals: ModelSignalsSchema
+    insights: List[str]

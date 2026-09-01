@@ -8,172 +8,458 @@
 ![React](https://img.shields.io/badge/React-Frontend-blue)
 ![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
 
-A full-stack analytics platform that syncs Codeforces profiles, computes competitive programming insights, tracks progress, identifies weaknesses, and generates personalized recommendations.
+An end-to-end competitive programming analytics platform that synchronizes Codeforces data, analyzes user performance, identifies strengths and weaknesses, and uses machine learning to generate personalized problem recommendations and problem-level insights.
 
 ---
 
-## 🚀 Quick Preview
+## Quick Preview
 
 <p align="center">
-  <img src="images/app_gif.gif" alt="CP Analytics Demo GIF" width="500">
+  <img src="images/app_gif.gif" alt="CP Analytics Demo GIF" width="600">
 </p>
 
 <p align="center">
-  <i>A quick walkthrough of CP Analytics showcasing authentication, Codeforces sync, analytics dashboard, contest insights, daily activity, tag analysis, and personalized recommendations.</i>
+  <i>
+    A walkthrough of CP Analytics covering authentication, Codeforces synchronization,
+    analytics, contest performance, daily activity, tag analysis,
+    personalized recommendations, and ML-powered problem insights.
+  </i>
 </p>
-
 
 ---
 
-## 🎥 Project Demo
+## Project Demo
 
 <p align="center">
   <a href="https://youtu.be/SYv24VIP74I">
-    <img src="images/thumbnail.png" alt="CP Analytics Demo" width="500">
+    <img src="images/thumbnail.png" alt="CP Analytics Demo" width="600">
   </a>
 </p>
 
 <p align="center">
-  <b>▶ Click the thumbnail above to watch the complete project walkthrough.</b>
+  <b>▶ Click the thumbnail to watch the complete project walkthrough.</b>
 </p>
 
 ---
 
 ## Live Demo
 
-🌐 **Frontend:** https://cp-bot-main.onrender.com
+**Frontend:**  
+https://cp-bot-main.onrender.com
 
-📚 **Backend API:** https://cp-bot-1.onrender.com/docs
+**Backend API:**  
+https://cp-bot-1.onrender.com/docs
 
-> **Note:** The live demo runs without a Celery worker due to Render's free-tier limitations. Background synchronization executes synchronously in production while retaining the complete Celery architecture for local development.
-
----
-
-## Project Highlights
-
-* JWT Authentication & Protected Routes
-* Codeforces Profile & Contest Synchronization
-* Analytics Engine for Performance Tracking
-* Personalized Recommendation System
-* Redis-based Dashboard Caching
-* Celery Background Task Architecture
-* Automated Testing with Pytest
-* GitHub Actions Continuous Integration
-* Dockerized Multi-Service Development Environment
-* Production Deployment on Render
+> **Note:** The production deployment runs synchronization synchronously because the Render free tier does not support a persistent Celery worker. The complete Celery-based background processing architecture is retained for local development.
 
 ---
 
-## Features
+# What Makes This Project Different?
 
-### Authentication
+CP Analytics combines **data engineering, machine learning, analytics, and full-stack deployment** into a single system.
+
+The platform processes thousands of historical competitive programming submissions and transforms them into personalized learning recommendations.
+
+### ML Pipeline
+
+```text
+Codeforces Submission History
+            │
+            ▼
+      Data Cleaning
+            │
+            ▼
+     Feature Engineering
+            │
+            ▼
+   23 Leakage-Safe Features
+            │
+            ▼
+ Temporal Train/Test Split
+            │
+            ▼
+ Logistic Regression
+          vs
+     Random Forest
+            │
+            ▼
+     Model Evaluation
+            │
+            ▼
+   Trained Random Forest
+            │
+            ▼
+   Solve Probability
+            │
+            ▼
+ Personalized Ranking
+            │
+            ▼
+ Recommendations + Insights
+```
+
+---
+
+# Machine Learning
+
+## Dataset
+
+The ML pipeline was built using **24K+ historical Codeforces problem attempts** after data cleaning.
+
+The raw submission data contains information such as:
+
+- User
+- Problem
+- Problem rating
+- Submission verdict
+- Submission timestamp
+- Problem tags
+- Previous attempts
+- Historical solving behavior
+
+The data is transformed into a chronological user-history dataset for model training.
+
+---
+
+## Feature Engineering
+
+The model uses **23 leakage-safe features** derived from historical user behavior and problem metadata.
+
+Feature groups include:
+
+### Problem Difficulty
+
+- Problem rating
+- Rating difference from user
+- Maximum rating difference
+- Average solved rating
+- Maximum solved rating
+
+### Historical Performance
+
+- Historical solve rate
+- Total attempts
+- Average attempts before solving
+
+### Topic Performance
+
+- Tag familiarity
+- Average tag success
+- Strongest tag success
+- Weakest tag success
+
+### Recent Activity
+
+- Recent 7-day solve rate
+- Recent 7-day attempts
+- Recent 30-day solve rate
+- Recent 30-day attempts
+
+### Failure Patterns
+
+- Recent wrong-answer rate
+- Recent TLE rate
+- Recent runtime-error rate
+- Recent compilation-error rate
+
+### Problem-Specific History
+
+- Previous attempts on the problem
+- Previous failures
+- Previous successful submission
+
+All historical features are generated using information available **before the current submission**, preventing future information from leaking into training features.
+
+---
+
+## Model Training
+
+Two models were evaluated:
+
+- Logistic Regression
+- Random Forest
+
+A **temporal train/test split** was used instead of randomly shuffling submissions, making evaluation more representative of real-world prediction.
+
+### Dataset
+
+```text
+Total cleaned records: 24,862
+
+Training set: 19,889
+Test set:       4,973
+```
+
+### Random Forest Results
+
+| Metric | Score |
+|---|---:|
+| Accuracy | 0.670 |
+| Precision | 0.710 |
+| Recall | 0.695 |
+| F1 Score | 0.702 |
+| ROC-AUC | 0.722 |
+| PR-AUC | 0.766 |
+
+Random Forest was selected as the final model based on its overall performance on the held-out temporal test set.
+
+The trained model and feature configuration are persisted and loaded during inference.
+
+---
+
+# Personalized Recommendation System
+
+The recommendation engine combines:
+
+1. User's current competitive programming rating
+2. Historical solving performance
+3. Weakest programming topics
+4. Problem difficulty
+5. ML-predicted solve probability
+6. Topic familiarity
+7. Recent activity
+8. Previous problem-solving behavior
+
+The system first identifies suitable unattempted problems and then uses the trained ML model to estimate the probability that the user will solve each problem.
+
+Problems are ranked using the predicted probability and personalized topic/difficulty signals.
+
+### Recommendation Categories
+
+- Weak Topic Improvement
+- Rating Push
+- Consistency Boost
+- Upsolve Recommendations
+- Contest Preparation
+
+Each recommendation can include a personalized explanation describing why the problem is relevant to the user.
+
+---
+
+# AI Problem Insights
+
+The platform also provides a dedicated **AI Problem Insights** feature.
+
+Users can enter a Codeforces problem ID such as:
+
+```text
+1537C
+1794B
+1490B
+2026A
+```
+
+The system analyzes the problem against the user's historical performance.
+
+### Insights include
+
+- Problem information
+- Problem rating
+- Problem tags
+- Predicted solve probability
+- Difficulty band
+- Personalized recommendation reason
+- Overall solve rate
+- Recent 7-day performance
+- Recent 30-day performance
+- Topic-level performance
+- Topic familiarity
+- Model signals
+- Personalized insights
+
+Example flow:
+
+```text
+User enters problem ID
+          │
+          ▼
+Problem lookup
+          │
+          ▼
+User history + problem metadata
+          │
+          ▼
+Feature generation
+          │
+          ▼
+ML prediction
+          │
+          ▼
+Topic analysis
+          │
+          ▼
+Personalized insights
+```
+
+---
+
+# Analytics
+
+## Dashboard
+
+The dashboard provides an overview of the user's competitive programming activity, including:
+
+- Current profile information
+- Total contests
+- Total problems
+- Active days
+- Recent activity
+- Personalized recommendations
+
+## Daily Activity
+
+Tracks:
+
+- Problems attempted
+- Problems solved
+- Daily success rate
+- Activity streaks
+- Yearly activity heatmap
+
+## Contest Analytics
+
+Analyzes:
+
+- Rating progression
+- Contest performance
+- Rating trends
+- Peak rating
+- Contest statistics
+
+## Tag Analytics
+
+Provides:
+
+- Tag-wise solve rate
+- Topic performance
+- Strong topics
+- Weak topics
+- Topic ranking
+- Skill estimation
+
+---
+
+# Application Features
+
+## Authentication
 
 - JWT Authentication
-- Register/Login
+- User Registration
+- User Login
 - Protected Routes
+- Authentication-aware API requests
 
-### Data Sync
+## Codeforces Synchronization
 
 - Codeforces Profile Sync
 - Contest History Import
 - Submission History Import
-- Background Processing using Celery (with synchronous fallback for production deployment)
+- User Activity Synchronization
 
-### Analytics
+## Data Processing
 
-- Rating Progression
-- Contest Performance Analysis
-- Daily Activity Tracking
-- Tag-wise Performance Analysis
-- Skill Estimation
+- Submission cleaning
+- Historical performance aggregation
+- Topic-level statistics
+- Chronological feature generation
+- ML-ready dataset generation
 
-### Recommendations
+## Machine Learning
 
-- Weak Topic Detection
-- Rating Push Suggestions
-- Consistency Tracking
-- Upsolve Recommendations
+- Feature engineering
+- Binary classification
+- Random Forest
+- Logistic Regression baseline
+- Temporal validation
+- Model evaluation
+- Personalized prediction
+- Recommendation ranking
 
-### Infrastructure
+## Recommendations
 
-* Docker
-* Docker Compose
-* PostgreSQL
-* Redis Caching
-* Celery Background Tasks
-* GitHub Actions CI
-* Structured Logging
-* Health Check Endpoints
-* Production Deployment (Render)
-
----
-
-## Dashboard Preview
-
-### Dashboard
-
-![Dashboard](images/dashboard.png)
-
-### Contest Analytics
-
-![Contest Analytics](images/contest.png)
-
-### Daily Activity
-
-![Daily Activity](images/daily-activity.png)
-
-### Tag Analytics
-
-![Tag Analytics](images/tags.png)
-
-### Recommendations
-
-![Recommendations](images/recommendation.png)
-
-### Sidebar Navigation
-
-![Sidebar](images/sidebar.png)
+- Personalized problem recommendations
+- Weak-topic recommendations
+- Difficulty-aware recommendations
+- ML solve probability
+- Problem-level insights
 
 ---
 
-## System Architecture
+# System Architecture
 
 ```text
-                    React Frontend
-                    (Vite + Tailwind)
-                           │
-                           ▼
-                  FastAPI Backend
-                           │
-          ┌────────────────┼────────────────┐
-          │                │                │
-          ▼                ▼                ▼
-     PostgreSQL        Redis Cache     Celery Worker*
-          │
-          ▼
-     Codeforces API
+                       React Frontend
+                     Vite + TailwindCSS
+                            │
+                            ▼
+                     FastAPI Backend
+                            │
+             ┌──────────────┼──────────────┐
+             │              │              │
+             ▼              ▼              ▼
+        PostgreSQL      Redis Cache    Celery Worker
+             │
+             ▼
+       Analytics Engine
+             │
+             ▼
+     Feature Engineering
+             │
+             ▼
+      ML Inference Layer
+             │
+             ▼
+     Random Forest Model
+             │
+             ▼
+ Recommendations + Insights
 
-*The production deployment executes synchronization
-synchronously because the Render free tier does not
-support background workers.
+             │
+             ▼
+       Codeforces API
 ```
 
+### Production Architecture
+
+The production deployment uses the Render environment.
+
+Because the free-tier deployment does not provide a persistent Celery worker, synchronization falls back to synchronous execution while the complete Celery architecture remains available for local development.
 
 ---
 
-## Tech Stack
+# Tech Stack
 
-### Backend
+## Data Science / Machine Learning
+
+- Python
+- Pandas
+- NumPy
+- Scikit-learn
+- Matplotlib
+- Seaborn
+- Feature Engineering
+- Classification
+- Random Forest
+- Logistic Regression
+- Model Evaluation
+
+## Backend
 
 - FastAPI
-- PostgreSQL
 - SQLAlchemy 2.0
 - Alembic
+- REST APIs
 - JWT Authentication
+
+## Database / Data Infrastructure
+
+- PostgreSQL
+- MySQL
+- SQLite
 - Redis
 - Celery
 
-### Frontend
+## Frontend
 
 - React
 - Vite
@@ -181,16 +467,17 @@ support background workers.
 - Axios
 - React Router
 
-### Infrastructure
+## DevOps / Testing
 
-* Docker
-* Docker Compose
-* GitHub Actions
-* Render
+- Docker
+- Docker Compose
+- GitHub Actions
+- Pytest
+- Render
 
 ---
 
-## Project Structure
+# Project Structure
 
 ```text
 .
@@ -202,6 +489,14 @@ support background workers.
 │   ├── models.py
 │   ├── crud.py
 │   └── database.py
+│
+├── ml
+│   ├── features.py
+│   ├── train.py
+│   ├── models
+│   │   ├── best_model.pkl
+│   │   └── feature_cols.pkl
+│   └── ...
 │
 ├── frontend
 │   ├── src
@@ -217,66 +512,29 @@ support background workers.
 
 ---
 
-## Analytics Engine
+# API Endpoints
 
-The platform computes:
-
-### Daily Activity
-
-- Problems attempted
-- Problems solved
-- Success rate
-- Activity streaks
-
-### Tag Performance
-
-- Success rate per tag
-- Weakness score
-- Topic ranking
-
-### Contest Analytics
-
-- Rating progression
-- Contest trends
-- Peak rating analysis
-
-### Recommendations
-
-Generated automatically from analytics data.
-
-Types:
-
-- Weak Tag Improvement
-- Rating Push
-- Consistency Boost
-- Upsolve Problems
-- Contest Preparation
-
----
-
-## API Endpoints
-
-### Authentication
+## Authentication
 
 ```http
 POST /auth/register
 POST /auth/login
 ```
 
-### Sync
+## Synchronization
 
 ```http
 POST /sync/codeforces
 GET /sync/status/{task_id}
 ```
 
-### Dashboard
+## Dashboard
 
 ```http
 GET /users/dashboard
 ```
 
-### Analytics
+## Analytics
 
 ```http
 GET /users/contests
@@ -285,16 +543,135 @@ GET /users/tags
 GET /users/tags/weakest
 ```
 
-### Recommendations
+## Recommendations
 
 ```http
 GET /users/recommendations
 GET /users/upsolve
+GET /users/personalized
+```
+
+## Personalized Insights
+
+```http
+GET /users/personalized/{problem_id}/insights
 ```
 
 ---
 
-## Environment Variables
+# Dashboard Preview
+
+## Dashboard
+
+![Dashboard](images/dashboard.png)
+
+## Contest Analytics
+
+![Contest Analytics](images/contest.png)
+
+## Daily Activity
+
+![Daily Activity](images/daily-activity.png)
+
+## Tag Analytics
+
+![Tag Analytics](images/tags.png)
+
+## Recommendations
+
+![Recommendations](images/recommendation.png)
+
+## Sidebar Navigation
+
+![Sidebar](images/sidebar.png)
+
+---
+
+# Testing
+
+The backend uses **Pytest** with a dedicated testing database.
+
+### Authentication Tests
+
+- Registration
+- Login
+- Invalid credentials
+- Protected routes
+
+### Analytics Tests
+
+- Dashboard
+- Daily activity
+- Tag analytics
+- Contest analytics
+- Recommendations
+
+### Infrastructure
+
+- Pytest fixtures
+- FastAPI dependency overrides
+- Separate test database
+- GitHub Actions CI pipeline
+
+---
+
+# Quick Start
+
+The recommended way to run the complete application locally is Docker Compose.
+
+```bash
+docker compose up --build
+```
+
+This starts:
+
+- FastAPI Backend
+- PostgreSQL
+- Redis
+- Celery Worker
+- React Frontend
+
+---
+
+# Manual Setup
+
+## 1. PostgreSQL
+
+Ensure PostgreSQL is running and the required database is available.
+
+## 2. Redis
+
+```bash
+redis-server
+```
+
+## 3. Backend
+
+```bash
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn main:app --reload
+```
+
+## 4. Celery Worker
+
+```bash
+celery -A core.celery_app worker --loglevel=info
+```
+
+## 5. Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+# Environment Variables
+
+Create a `.env` file containing the required configuration:
 
 ```env
 POSTGRES_USER=
@@ -317,143 +694,83 @@ RUN_MIGRATIONS=false
 VITE_API_URL=http://localhost:8000
 ```
 
+Never commit production secrets or credentials to the repository.
 
 ---
 
-## Testing
+# Deployment
 
-Implemented using **Pytest** with a dedicated testing database.
+The application is deployed using Render.
 
-### Authentication
+### Production Components
 
-* Register
-* Login
-* Invalid Credentials
-* Protected Routes
+- React frontend
+- FastAPI backend
+- PostgreSQL database
+- Redis
+- Production environment configuration
 
-### Analytics
+The trained ML model is stored as a model artifact and loaded by the backend during inference.
 
-* Dashboard
-* Daily Activity
-* Tag Analytics
-* Contest Analytics
-* Recommendations
-
-### Test Infrastructure
-
-* Pytest Fixtures
-* FastAPI Dependency Overrides
-* Separate Test Database
-* GitHub Actions CI Pipeline
-
----
-## Quick Start (Recommended)
-
-Run the complete application using Docker Compose.
-
-```bash
-docker compose up --build
-```
-
-This starts:
-
-* FastAPI Backend
-* PostgreSQL
-* Redis
-* Celery Worker
-* React Frontend
-
----
-## Manual Setup
-
-The order should be strictly followed
-
-### 1. Start PostgreSQL
-
-Ensure PostgreSQL is running and your database is created.
-
-### 2. Start Redis
-
-```bash
-redis-server
-```
-
-### 3. Backend
-
-```bash
-pip install -r requirements.txt
-
-alembic upgrade head
-
-uvicorn main:app --reload
-```
-
-### 4. Celery Worker
-
-```bash
-celery -A tasks.task worker --loglevel=info
-```
-
-### 5. Frontend
-
-```bash
-cd frontend
-
-npm install
-
-npm run dev
-```
+The production database contains its own synchronized user data; the model does not require the training database to make predictions as long as the required features can be generated from the available user history.
 
 ---
 
-## Future Improvements
-
-* AI-powered Performance Insights
-* Weekly Performance Reports
-* Personalized Study Plans
-* Multi-Platform Support (LeetCode, CodeChef, AtCoder)
-* Real-time Notifications
-* WebSocket-based Live Updates
-* Monitoring & Metrics Dashboard
-* OpenTelemetry Integration
-
----
-
-## Learning Outcomes
+# Learning Outcomes
 
 This project provided hands-on experience with:
 
-* Backend Engineering
-* Full Stack Development
-* REST API Design
-* Authentication & Authorization
-* Database Design
-* SQLAlchemy ORM
-* Database Migrations with Alembic
-* Analytics Pipeline Design
-* Recommendation Systems
-* Redis Caching
-* Background Processing with Celery
-* Docker & Docker Compose
-* Automated Testing with Pytest
-* GitHub Actions CI
-* Production Deployment
-* Logging & Health Monitoring
+- Data Cleaning
+- Exploratory Data Analysis
+- Feature Engineering
+- Leakage Prevention
+- Temporal Train/Test Splitting
+- Classification
+- Model Comparison
+- Model Evaluation
+- Recommendation Systems
+- Personalized Prediction
+- Analytics Pipeline Design
+- PostgreSQL
+- SQLAlchemy ORM
+- REST API Design
+- FastAPI
+- Redis Caching
+- Background Processing
+- Celery
+- Docker
+- Automated Testing
+- GitHub Actions
+- Production Deployment
+- Full-Stack ML Integration
 
 ---
 
-## License
+# Future Improvements
+
+- Personalized Study Plans
+- Weekly Performance Reports
+- Multi-platform support for LeetCode, CodeChef, and AtCoder
+- Real-time notifications
+- WebSocket-based live updates
+- Monitoring and metrics dashboard
+- OpenTelemetry integration
+
+---
+
+# License
 
 This project is licensed under the MIT License.
 
 ---
 
-## Author
+# Author
 
-### Sushank Singh
+## Sushank Singh
 
-B.Tech CSE
+B.Tech. Computer Science and Engineering  
 VIT-AP University
 
-GitHub: https://github.com/sushanksingh00
-LinkedIn: https://www.linkedin.com/in/sushank-singh-92a80731a/
+**GitHub:** https://github.com/sushanksingh00
+
+**LinkedIn:** https://www.linkedin.com/in/sushank-singh-92a80731a/

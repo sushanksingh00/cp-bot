@@ -8,6 +8,7 @@ import Contests from "./pages/contests";
 import DailyActivity from "./pages/daily_activity";
 import Tags from "./pages/tags";
 import Recommendations from "./pages/recommendations";
+import ProblemInsights from "./pages/ProblemInsights";
 import Sync from "./pages/sync";
 
 
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/daily-activity" element={<DailyActivity />} />
                 <Route path="/tags" element={<Tags />} />
                 <Route path="/recommendations" element={<Recommendations />} />
+                <Route path="/insights" element={<ProblemInsights />} />
             </Routes>
         </BrowserRouter>
     );

@@ -55,3 +55,10 @@ urllib3==2.7.0
 uvicorn==0.47.0
 vine==5.1.0
 wcwidth==0.8.1
+pandas
+scikit-learn
+xgboost
+shap
+matplotlib
+seaborn
+jupyter

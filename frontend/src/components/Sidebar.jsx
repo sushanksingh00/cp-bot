@@ -7,6 +7,7 @@ import dashboard from "../assets/dashboard.svg";
 import activity from "../assets/activity.svg";
 import contest from "../assets/contest.svg";
 import recommendation from "../assets/recommendation.svg";
+import aiIcon from "../assets/ai.svg";
 import tags from "../assets/tags.svg";
 import logoutIcon from "../assets/logout.svg";
 
@@ -65,6 +66,11 @@ const Sidebar = ({}) => {
                 <Link to="/recommendations" className={linkClass}>
                     <img src={recommendation} alt="Recommendations" className={iconClass} />
                     {!collapsed && <span className="ml-3">Recommendations</span>}
+                </Link>
+
+                <Link to="/insights" className={linkClass}>
+                    <img src={aiIcon} alt="AI Problem Insights" className={iconClass} />
+                    {!collapsed && <span className="ml-3 text-blue-600 font-semibold">AI Insights</span>}
                 </Link>
 
             </div>

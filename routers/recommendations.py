@@ -68,3 +68,24 @@ def upsolve(current_user : AppUsers = Depends(get_current_user), session: Sessio
         })
     logger.info(upsolve_data)
     return upsolve_data
+
+from schemas import MLRecommendationResponse, MLInsightResponse
+from services.recommendation_services import generate_ml_recommendations, generate_problem_insights
+
+@router.get("/personalized", response_model=List[MLRecommendationResponse])
+def personalized_recommendations(current_user: AppUsers = Depends(get_current_user), session: Session = Depends(get_db)):
+    user = get_linked_cf_user(current_user.id, session)
+    if not user:
+        raise HTTPException(status_code=404, detail="Codeforces user not found")
+        
+    recommendations = generate_ml_recommendations(session, user.id)
+    return recommendations
+
+@router.get("/personalized/{problem_id}/insights", response_model=MLInsightResponse)
+def personalized_problem_insights(problem_id: str, current_user: AppUsers = Depends(get_current_user), session: Session = Depends(get_db)):
+    user = get_linked_cf_user(current_user.id, session)
+    if not user:
+        raise HTTPException(status_code=404, detail="Codeforces user not found")
+        
+    insights = generate_problem_insights(session, user.id, problem_id)
+    return insights
